@@ -1,16 +1,33 @@
-// src/pages/Main/index.tsx
+import { PROJECTS } from './dummyProjectData';
+import MainHeader from './components/MainHeader';
+import SegmentControl from './components/SegmentControl';
+import ProjectCard from './components/ProjectCard';
+
 export default function MainPage() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <h1 className="text-4xl font-bold text-blue-600 mb-4">Hello Tailwind!</h1>
-      <p className="text-gray-600 mb-8">
-        도커 환경에서 테일윈드가 아주 잘 돌아가고 있네요.
-      </p>
+    <div className="min-h-screen bg-gray-50 text-slate-900">
+      <MainHeader />
 
-      {/* 테일윈드 클래스로 만든 버튼 */}
-      <button className="px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none transition duration-300">
-        멋진 버튼
-      </button>
+      <main className="max-w-7xl mx-auto px-8 py-10">
+        <SegmentControl />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {PROJECTS.map((project) => (
+            <ProjectCard
+              key={project.id.toString()}
+              project={{
+                id: project.id.toString(),
+                title: project.title,
+                status: project.status,
+                statusColor: project.statusColor,
+                description: project.description,
+                date: project.date,
+                members: project.members,
+                tasks: project.tasks,
+              }}
+            />
+          ))}
+        </div>
+      </main>
     </div>
   );
 }
