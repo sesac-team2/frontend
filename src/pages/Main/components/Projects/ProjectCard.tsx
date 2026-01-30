@@ -3,23 +3,13 @@ import {
   UsersThreeIcon,
   ScrollIcon,
 } from '@phosphor-icons/react';
+import type { Project } from '../../../../types/project';
 
 interface ProjectCardProps {
-  id: string;
-  title: string;
-  status: string;
-  statusColor: string;
-  description: string;
-  date: string;
-  members: number;
-  tasks: number;
+  project: Project;
 }
 
-export default function ProjectCard({
-  project,
-}: {
-  project: ProjectCardProps;
-}) {
+export default function ProjectCard({ project }: ProjectCardProps) {
   return (
     <div className="bg-white border border-gray-100 rounded-2xl p-7 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all group flex flex-col h-full hover:-translate-y-1 duration-300 cursor-pointer">
       <div className="flex justify-between items-start mb-4">
