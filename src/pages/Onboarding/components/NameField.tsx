@@ -1,9 +1,9 @@
-type Props = {
+interface NameFieldProps {
   value: string;
-  onChange: (v: string) => void;
-};
+  onChange: (value: string) => void;
+}
 
-export default function NameField({ value, onChange }: Props) {
+export default function NameField({ value, onChange }: NameFieldProps) {
   return (
     <div>
       <label className="block text-sm font-medium text-slate-700">
