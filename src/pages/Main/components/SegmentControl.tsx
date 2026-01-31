@@ -1,26 +1,78 @@
-export default function SegmentControl() {
+import { useRef, useEffect, useState } from 'react';
+import { FolderSimpleIcon, ChartBarIcon } from '@phosphor-icons/react';
+
+export const Tab = {
+  PROJECTS: 'projects',
+  CONTRIBUTIONS: 'contributions',
+} as const;
+
+export type Tab = (typeof Tab)[keyof typeof Tab];
+
+export default function SegmentControl({
+  activeTab,
+  setActiveTab,
+}: {
+  activeTab: Tab;
+  setActiveTab: (tab: Tab) => void;
+}) {
+  const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 });
+  const projectsRef = useRef<HTMLButtonElement>(null);
+  const contributionsRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const activeRef =
+      activeTab === Tab.PROJECTS ? projectsRef : contributionsRef;
+
+    if (activeRef.current) {
+      const { offsetLeft, offsetWidth } = activeRef.current;
+      setIndicatorStyle({
+        left: offsetLeft,
+        width: offsetWidth,
+      });
+    }
+  }, [activeTab]);
+
   return (
-    <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-6">
-      <div className="flex bg-gray-100 p-1.5 rounded-xl w-fit shadow-inner">
-        <button className="flex items-center gap-2 px-5 py-2 bg-white text-teal-700 rounded-lg shadow-sm font-semibold transition-all">
-          <span className="text-base">📁</span>
-          <span className="text-sm">My Projects</span>
-        </button>
-        <button className="flex items-center gap-2 px-5 py-2 text-gray-500 hover:text-gray-700 font-medium transition-colors">
-          <span className="text-base">📑</span>
-          <span className="text-sm">My Contributions</span>
-        </button>
-      </div>
-      <div className="relative w-full md:w-96 group">
-        <input
-          type="text"
-          placeholder="Search projects..."
-          className="w-full pl-11 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 bg-white transition-all group-hover:border-gray-300"
+    <div className="relative flex items-center bg-white p-1 rounded-xl w-fit shadow-inner border border-gray-100">
+      <div
+        className="absolute top-1 bottom-1 bg-teal-600 rounded-lg shadow-sm transition-all duration-300 ease-out"
+        style={{
+          left: `${indicatorStyle.left}px`,
+          width: `${indicatorStyle.width}px`,
+        }}
+      />
+
+      <button
+        ref={projectsRef}
+        onClick={() => setActiveTab(Tab.PROJECTS)}
+        className={`relative z-10 flex items-center gap-2 px-5 py-2 rounded-lg font-semibold transition-colors duration-300 ${
+          activeTab === Tab.PROJECTS
+            ? 'text-white'
+            : 'text-gray-500 hover:text-gray-700'
+        }`}
+      >
+        <FolderSimpleIcon
+          size={18}
+          weight={activeTab === Tab.PROJECTS ? 'bold' : 'regular'}
         />
-        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-teal-500 transition-colors">
-          🔍
-        </span>
-      </div>
+        <span className="text-sm">My Projects</span>
+      </button>
+
+      <button
+        ref={contributionsRef}
+        onClick={() => setActiveTab(Tab.CONTRIBUTIONS)}
+        className={`relative z-10 flex items-center gap-2 px-5 py-2 rounded-lg font-semibold transition-colors duration-300 ${
+          activeTab === Tab.CONTRIBUTIONS
+            ? 'text-white'
+            : 'text-gray-500 hover:text-gray-700'
+        }`}
+      >
+        <ChartBarIcon
+          size={18}
+          weight={activeTab === Tab.CONTRIBUTIONS ? 'bold' : 'regular'}
+        />
+        <span className="text-sm">My Contributions</span>
+      </button>
     </div>
   );
 }

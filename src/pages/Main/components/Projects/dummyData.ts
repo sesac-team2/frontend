@@ -1,6 +1,8 @@
-export const PROJECTS = [
+import type { Project } from '../../../../types/project';
+
+export const PROJECTS: Project[] = [
   {
-    id: 1,
+    id: '1',
     title: 'E-Commerce Platform Redesign',
     status: 'In progress',
     description:
@@ -11,7 +13,7 @@ export const PROJECTS = [
     statusColor: 'bg-blue-100 text-blue-700',
   },
   {
-    id: 2,
+    id: '2',
     title: 'Mobile App Development',
     status: 'Completed',
     description: 'Native mobile application for iOS and Android platforms',
@@ -21,7 +23,7 @@ export const PROJECTS = [
     statusColor: 'bg-green-100 text-green-700',
   },
   {
-    id: 3,
+    id: '3',
     title: 'Marketing Campaign Q1',
     status: 'Not started',
     description: 'Comprehensive marketing campaign for Q1 product launch',
@@ -31,7 +33,7 @@ export const PROJECTS = [
     statusColor: 'bg-gray-100 text-gray-700',
   },
   {
-    id: 4,
+    id: '4',
     title: 'API Integration Project',
     status: 'In progress',
     description:
@@ -42,7 +44,7 @@ export const PROJECTS = [
     statusColor: 'bg-blue-100 text-blue-700',
   },
   {
-    id: 5,
+    id: '5',
     title: 'Data Analytics Dashboard',
     status: 'Completed',
     description:
@@ -53,7 +55,7 @@ export const PROJECTS = [
     statusColor: 'bg-green-100 text-green-700',
   },
   {
-    id: 6,
+    id: '6',
     title: 'Customer Support Portal',
     status: 'In progress',
     description: 'Self-service customer support portal with AI-powered chatbot',

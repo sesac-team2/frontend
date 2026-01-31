@@ -1,30 +1,64 @@
-import { PROJECTS } from './dummyProjectData';
+import { useState } from 'react';
+
 import MainHeader from './components/MainHeader';
-import SegmentControl from './components/SegmentControl';
-import ProjectCard from './components/ProjectCard';
+import SegmentControl, { Tab } from './components/SegmentControl';
+import Projects from './components/Projects';
+import Contributions from './components/Contributions';
+import ProjectSearchInput from './components/ProjectSearchInput';
+import { KEYWORDS } from './components/Contributions/dummyData';
+import { PROJECTS } from './components/Projects/dummyData';
+import { TESTIMONIALS } from './components/Contributions/dummyData';
 
 export default function MainPage() {
+  const [activeTab, setActiveTab] = useState<Tab>(Tab.PROJECTS);
+
   return (
     <div className="min-h-screen bg-gray-50 text-slate-900">
       <MainHeader />
 
       <main className="max-w-7xl mx-auto px-8 py-10">
-        <SegmentControl />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {PROJECTS.map((project) => (
-            <ProjectCard
-              key={project.id.toString()}
-              project={{
-                id: project.id.toString(),
-                title: project.title,
-                status: project.status,
-                statusColor: project.statusColor,
-                description: project.description,
-                date: project.date,
-                members: project.members,
-                tasks: project.tasks,
-              }}
-            />
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-6">
+          <SegmentControl activeTab={activeTab} setActiveTab={setActiveTab} />
+          <div
+            className={`transition-all duration-300 ease-in-out ${
+              activeTab === Tab.PROJECTS
+                ? 'opacity-100 translate-x-0 visible'
+                : 'opacity-0 translate-x-4 invisible'
+            }`}
+          >
+            <ProjectSearchInput />
+          </div>
+        </div>
+
+        <div className="relative mt-10">
+          {[
+            {
+              id: Tab.PROJECTS,
+              content: <Projects projects={PROJECTS} />,
+              exitY: '-translate-y-4',
+            },
+            {
+              id: Tab.CONTRIBUTIONS,
+              content: (
+                <Contributions
+                  testimonials={TESTIMONIALS}
+                  projectCount={PROJECTS.length}
+                  keywords={KEYWORDS}
+                />
+              ),
+              exitY: 'translate-y-4',
+            },
+          ].map(({ id, content, exitY }) => (
+            <div
+              key={id}
+              className={`transition-all duration-500 ease-in-out ${
+                activeTab === id
+                  ? 'opacity-100 translate-y-0 visible'
+                  : `opacity-0 ${exitY} invisible absolute inset-0 pointer-events-none h-0 overflow-hidden`
+              }`}
+            >
+              {content}
+            </div>
           ))}
         </div>
       </main>

@@ -3,7 +3,7 @@ import {
   UsersThreeIcon,
   ScrollIcon,
 } from '@phosphor-icons/react';
-import type { Project } from '../../../types/project';
+import type { Project } from '../../../../types/project';
 
 interface ProjectCardProps {
   project: Project;
