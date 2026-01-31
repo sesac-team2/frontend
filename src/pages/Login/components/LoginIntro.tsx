@@ -1,54 +1,58 @@
-import { ShareNetworkIcon } from "@phosphor-icons/react";
+import {
+  ShareNetworkIcon,
+  ChartBarIcon,
+  UserIcon,
+  BooksIcon,
+} from '@phosphor-icons/react';
 
-export default function LoginIntro(){
-    return (
-        <>
-            {/* Logo */}
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50">
-               {/*  <LogoMark /> */}
-              </div>
-              <div className="text-xl font-semibold text-slate-900">
-                ContributeHub
-              </div>
-            </div>
+export default function LoginIntro() {
+  return (
+    <>
+      {/* Logo */}
+      <div className="flex items-center gap-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50">
+          <BooksIcon fill="true" size={32} />
+        </div>
+        <div className="text-xl font-semibold text-slate-900">
+          ContributeHub
+        </div>
+      </div>
 
-            {/* Headline */}
-            <h1 className="mt-10 text-4xl font-extrabold leading-tight text-slate-900 sm:text-5xl">
-              Turn Team <br />
-              Contributions Into <br />
-              <span className="text-emerald-600">Visible Impact</span>
-            </h1>
+      {/* Headline */}
+      <h1 className="mt-10 text-4xl font-extrabold leading-tight text-slate-900 sm:text-5xl">
+        Turn Team <br />
+        Contributions Into <br />
+        <span className="text-emerald-600">Visible Impact</span>
+      </h1>
 
-            {/* Description */}
-            <p className="mt-6 max-w-xl text-base leading-7 text-slate-600">
-              Record, summarize, and visualize individual contributions in
-              project-based collaboration through structured testimonials.
-              Create shareable contribution summaries that showcase real impact.
-            </p>
+      {/* Description */}
+      <p className="mt-6 max-w-xl text-base leading-7 text-slate-600">
+        Record, summarize, and visualize individual contributions in
+        project-based collaboration through structured testimonials. Create
+        shareable contribution summaries that showcase real impact.
+      </p>
 
-            {/* Feature bullets */}
-            <div className="mt-10 space-y-6">
-              {/* <FeatureRow
-                //icon={<PeopleIcon />}
-                title="Structured Testimonials"
-                desc="Write meaningful testimonials about team members through guided questions"
-              />
-              <FeatureRow
-                //icon={<ChartIcon />}
-                title="Visual Summaries"
-                desc="Generate beautiful visualizations of contributions and behavioral patterns"
-              /> */}
-              <FeatureRow
-                icon={<ShareNetworkIcon size={24} />}
-                title="Shareable Pages"
-                desc="Create public contribution pages to showcase your impact externally"
-              />
-            </div>  
-        </>
-    );
+      {/* Feature bullets */}
+      <div className="mt-10 space-y-6">
+        <FeatureRow
+          icon={<UserIcon size={24} />}
+          title="Structured Testimonials"
+          desc="Write meaningful testimonials about team members through guided questions"
+        />
+        <FeatureRow
+          icon={<ChartBarIcon size={24} />}
+          title="Visual Summaries"
+          desc="Generate beautiful visualizations of contributions and behavioral patterns"
+        />
+        <FeatureRow
+          icon={<ShareNetworkIcon size={24} />}
+          title="Shareable Pages"
+          desc="Create public contribution pages to showcase your impact externally"
+        />
+      </div>
+    </>
+  );
 }
-
 
 function FeatureRow({
   icon,
@@ -71,5 +75,3 @@ function FeatureRow({
     </div>
   );
 }
-        
-    
