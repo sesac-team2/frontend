@@ -1,13 +1,19 @@
-import { KEYWORDS } from './dummyData';
+interface KeywordsCardProps {
+  keywords: {
+    name: string;
+    count: number;
+    total: number;
+  }[];
+}
 
-export default function KeywordsCard() {
+export default function KeywordsCard({ keywords }: KeywordsCardProps) {
   return (
     <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
       <h2 className="text-xl font-bold text-slate-800 mb-6 font-display">
         Top Keywords
       </h2>
       <div className="space-y-5">
-        {KEYWORDS.map((kw, idx) => (
+        {keywords.map((kw, idx) => (
           <div key={kw.name} className="space-y-1.5">
             <div className="flex justify-between items-center text-sm">
               <div className="flex gap-3 items-center">

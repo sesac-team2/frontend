@@ -5,6 +5,9 @@ import SegmentControl, { Tab } from './components/SegmentControl';
 import Projects from './components/Projects';
 import Contributions from './components/Contributions';
 import ProjectSearchInput from './components/ProjectSearchInput';
+import { KEYWORDS } from './components/Contributions/dummyData';
+import { PROJECTS } from './components/Projects/dummyData';
+import { TESTIMONIALS } from './components/Contributions/dummyData';
 
 export default function MainPage() {
   const [activeTab, setActiveTab] = useState<Tab>(Tab.PROJECTS);
@@ -31,12 +34,18 @@ export default function MainPage() {
           {[
             {
               id: Tab.PROJECTS,
-              content: <Projects />,
+              content: <Projects projects={PROJECTS} />,
               exitY: '-translate-y-4',
             },
             {
               id: Tab.CONTRIBUTIONS,
-              content: <Contributions />,
+              content: (
+                <Contributions
+                  testimonials={TESTIMONIALS}
+                  projectCount={PROJECTS.length}
+                  keywords={KEYWORDS}
+                />
+              ),
               exitY: 'translate-y-4',
             },
           ].map(({ id, content, exitY }) => (

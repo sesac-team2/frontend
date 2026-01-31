@@ -1,8 +1,14 @@
 import { DownloadSimpleIcon } from '@phosphor-icons/react';
 import TestimonialCard from './TestimonialCard';
-import { TESTIMONIALS } from './dummyData';
+import type { Testimonial } from '../../../../types/testimonial';
 
-export default function TestimonialSection() {
+interface TestimonialSectionProps {
+  testimonials: Testimonial[];
+}
+
+export default function TestimonialSection({
+  testimonials,
+}: TestimonialSectionProps) {
   return (
     <div className="space-y-6 bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
       <div className="flex items-center justify-between mb-2">
@@ -14,7 +20,7 @@ export default function TestimonialSection() {
           <span>Export All</span>
         </button>
       </div>
-      {TESTIMONIALS.map((testimonial) => (
+      {testimonials.map((testimonial) => (
         <TestimonialCard key={testimonial.id} testimonial={testimonial} />
       ))}
     </div>
