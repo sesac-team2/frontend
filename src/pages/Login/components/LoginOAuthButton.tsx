@@ -1,6 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import type { LoginOAuthButtonProps } from '../components/types';
+
+export interface LoginOAuthButtonProps {
+  to: string;
+  providerLabel: string;
+  icon: React.ReactNode;
+}
 
 export default function LoginOAuthButton({
   to,
