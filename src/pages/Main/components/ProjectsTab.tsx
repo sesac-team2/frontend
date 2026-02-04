@@ -4,7 +4,11 @@ import { FolderOpen, Plus } from 'lucide-react';
 import type { Project } from '@/types';
 import ProjectCard from './ProjectCard';
 
-export default function ProjectsTab({ projects }: { projects: Project[] }) {
+interface ProjectTabProps {
+  projects: Project[];
+}
+
+export default function ProjectsTab({ projects }: ProjectTabProps) {
   if (projects.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
