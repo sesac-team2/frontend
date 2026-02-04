@@ -5,11 +5,13 @@ import { ImageIcon, Download } from 'lucide-react';
 import type { Testimonial } from '@/types';
 import TestimonialCard from './TestimonialCard';
 
+interface ContributionSummaryTabProps {
+  testimonials: Testimonial[];
+}
+
 export default function ContributionSummaryTab({
   testimonials,
-}: {
-  testimonials: Testimonial[];
-}) {
+}: ContributionSummaryTabProps) {
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
 
   const filteredTestimonials = selectedProject

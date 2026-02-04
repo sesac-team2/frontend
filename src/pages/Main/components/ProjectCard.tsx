@@ -12,7 +12,11 @@ import { MoreHorizontal, Users } from 'lucide-react';
 import type { Project } from '@/types';
 import { statusConfig, formatDate } from '../data';
 
-function MessageIcon({ className }: { className?: string }) {
+interface MessageIconProps {
+  className?: string;
+}
+
+function MessageIcon({ className }: MessageIconProps) {
   return (
     <svg
       className={className}

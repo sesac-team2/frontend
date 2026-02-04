@@ -4,11 +4,11 @@ import { Calendar } from 'lucide-react';
 import type { Testimonial } from '@/types';
 import { formatDateFull } from '../data';
 
-export default function TestimonialCard({
-  testimonial,
-}: {
+interface TestimonialCardProps {
   testimonial: Testimonial;
-}) {
+}
+
+export default function TestimonialCard({ testimonial }: TestimonialCardProps) {
   return (
     <div className="p-5 rounded-xl border border-border bg-card hover:border-muted-foreground/30 transition-colors">
       <div className="flex items-start gap-4">
