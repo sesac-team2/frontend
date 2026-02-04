@@ -1,58 +1,79 @@
+import { Link } from 'react-router-dom';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
-  CalendarBlankIcon,
-  UsersThreeIcon,
-  ScrollIcon,
-} from '@phosphor-icons/react';
-import type { Project } from '../../../types/project';
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { MoreHorizontal, Users } from 'lucide-react';
+import type { Project } from '@/types';
+import { statusConfig, formatDate } from '../data';
 
-interface ProjectCardProps {
-  project: Project;
+function MessageIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+    >
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+    </svg>
+  );
 }
 
-export default function ProjectCard({ project }: ProjectCardProps) {
+export default function ProjectCard({ project }: { project: Project }) {
+  const status = statusConfig[project.status];
+  const dateRange = `${formatDate(project.startDate)} — ${formatDate(project.endDate)}`;
+
   return (
-    <div className="bg-white border border-gray-100 rounded-2xl p-7 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all group flex flex-col h-full hover:-translate-y-1 duration-300 cursor-pointer">
-      <div className="flex justify-between items-start mb-4">
-        <h3 className="font-bold text-lg text-slate-800 group-hover:text-teal-600 transition-colors leading-tight">
-          {project.title}
+    <Link to={`/projects/${project.id}`} className="block group">
+      <div className="p-5 rounded-xl border border-border bg-card hover:border-muted-foreground/30 hover:shadow-sm transition-all">
+        <div className="flex items-start justify-between mb-3">
+          <Badge className={status.className}>{status.label}</Badge>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild onClick={(e) => e.preventDefault()}>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="w-8 h-8 opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+                <MoreHorizontal className="w-4 h-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem asChild>
+                <Link to={`/projects/${project.id}/edit`}>Edit project</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>Archive</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="text-destructive">
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
+        <h3 className="font-semibold text-foreground mb-1 group-hover:text-accent transition-colors">
+          {project.name}
         </h3>
-        <span className="text-gray-300 group-hover:text-teal-500 text-xl font-light">
-          ↗
-        </span>
-      </div>
+        <p className="text-sm text-muted-foreground mb-4">{dateRange}</p>
 
-      <div className="mb-4">
-        <span
-          className={`px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider ${project.statusColor}`}
-        >
-          {project.status}
-        </span>
-      </div>
-
-      <p className="text-sm text-gray-500 mb-4 grow leading-relaxed">
-        {project.description}
-      </p>
-
-      <div className="flex items-center gap-3 text-xs text-gray-400 font-medium mb-4 py-2 rounded-lg w-fit">
-        <CalendarBlankIcon />
-        {project.date}
-      </div>
-
-      <div className="flex items-center justify-between pt-4 border-t border-gray-100 mt-auto">
-        <div className="flex items-center gap-5">
-          <div className="flex items-center gap-2 text-gray-500">
-            <UsersThreeIcon />
-            <span className="text-sm font-bold">{project.members}</span>
+        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+          <div className="flex items-center gap-1.5">
+            <Users className="w-4 h-4" />
+            <span>{project.participantCount} members</span>
           </div>
-          <div className="flex items-center gap-2 text-gray-500">
-            <ScrollIcon />
-            <span className="text-sm font-bold">{project.tasks}</span>
+          <div className="flex items-center gap-1.5">
+            <MessageIcon className="w-4 h-4" />
+            <span>{project.testimonialCount} testimonials</span>
           </div>
         </div>
-        <button className="text-teal-600 text-sm font-bold hover:text-teal-700 hover:underline transition-colors">
-          Write Testimonial
-        </button>
       </div>
-    </div>
+    </Link>
   );
 }

@@ -1,67 +1,102 @@
 import { useState } from 'react';
-
-import MainHeader from './components/MainHeader';
-import SegmentControl, { Tab } from './components/SegmentControl';
-import Projects from './components/Projects';
-import Contributions from './components/Contributions';
-import ProjectSearchInput from './components/ProjectSearchInput';
-import { KEYWORDS } from './components/Contributions/dummyData';
-import { PROJECTS } from './components/Projects/dummyData';
-import { TESTIMONIALS } from './components/Contributions/dummyData';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Plus } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import ProjectsTab from './components/ProjectsTab';
+import ContributionSummaryTab from './components/ContributionSummaryTab';
+import { mockProjects, mockTestimonials } from './data';
 
 export default function MainPage() {
-  const [activeTab, setActiveTab] = useState<Tab>(Tab.PROJECTS);
+  const [activeTab, setActiveTab] = useState<'projects' | 'contributions'>(
+    'projects',
+  );
 
   return (
-    <div className="min-h-screen bg-gray-50 text-slate-900">
-      <MainHeader />
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="border-b border-border sticky top-0 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 z-10">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex items-center justify-between h-16">
+            <Link to="/" className="font-semibold text-lg text-foreground">
+              Contriboard
+            </Link>
 
-      <main className="max-w-7xl mx-auto px-8 py-10">
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-6">
-          <SegmentControl activeTab={activeTab} setActiveTab={setActiveTab} />
-          <div
-            className={`transition-all duration-300 ease-in-out ${
-              activeTab === Tab.PROJECTS
-                ? 'opacity-100 translate-x-0 visible'
-                : 'opacity-0 translate-x-4 invisible'
-            }`}
-          >
-            <ProjectSearchInput />
+            <div className="flex items-center gap-4">
+              <Link
+                to="/settings"
+                className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted transition-colors"
+              >
+                <Avatar className="w-7 h-7">
+                  <AvatarFallback className="text-xs bg-primary text-primary-foreground">
+                    JD
+                  </AvatarFallback>
+                </Avatar>
+                <span className="hidden sm:inline text-sm font-medium text-foreground">
+                  John Doe
+                </span>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Main content */}
+      <main className="max-w-7xl mx-auto px-6 py-8">
+        {/* Page header */}
+        <div className="flex items-start justify-between mb-8">
+          <div>
+            <h1 className="text-2xl font-semibold text-foreground">
+              Dashboard
+            </h1>
+            <p className="text-muted-foreground mt-1">
+              Manage your projects and view your contributions
+            </p>
+          </div>
+
+          {/* Tab toggle */}
+          <div className="flex items-center p-1 bg-muted rounded-lg">
+            <button
+              onClick={() => setActiveTab('projects')}
+              className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                activeTab === 'projects'
+                  ? 'bg-background text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              My Projects
+            </button>
+            <button
+              onClick={() => setActiveTab('contributions')}
+              className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                activeTab === 'contributions'
+                  ? 'bg-background text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              My Contribution Summary
+            </button>
           </div>
         </div>
 
-        <div className="relative mt-10">
-          {[
-            {
-              id: Tab.PROJECTS,
-              content: <Projects projects={PROJECTS} />,
-              exitY: '-translate-y-4',
-            },
-            {
-              id: Tab.CONTRIBUTIONS,
-              content: (
-                <Contributions
-                  testimonials={TESTIMONIALS}
-                  projectCount={PROJECTS.length}
-                  keywords={KEYWORDS}
-                />
-              ),
-              exitY: 'translate-y-4',
-            },
-          ].map(({ id, content, exitY }) => (
-            <div
-              key={id}
-              className={`transition-all duration-500 ease-in-out ${
-                activeTab === id
-                  ? 'opacity-100 translate-y-0 visible'
-                  : `opacity-0 ${exitY} invisible absolute inset-0 pointer-events-none h-0 overflow-hidden`
-              }`}
-            >
-              {content}
-            </div>
-          ))}
-        </div>
+        {activeTab === 'projects' ? (
+          <ProjectsTab projects={mockProjects} />
+        ) : (
+          <ContributionSummaryTab testimonials={mockTestimonials} />
+        )}
       </main>
+
+      {/* Fixed create button - only show on projects tab */}
+      {activeTab === 'projects' && (
+        <div className="fixed bottom-8 right-8">
+          <Button asChild size="lg" className="gap-2 shadow-lg">
+            <Link to="/projects/new">
+              <Plus className="w-5 h-5" />
+              Create Project
+            </Link>
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
