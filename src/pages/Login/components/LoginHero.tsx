@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import type { LoginHeroProps } from '../components/types';
+import ProovIcon from '@/assets/proov.svg';
 
 export default function LoginHero({ brandName, brandTo }: LoginHeroProps) {
   return (
@@ -7,9 +8,10 @@ export default function LoginHero({ brandName, brandTo }: LoginHeroProps) {
       <div>
         <Link
           to={brandTo}
-          className="text-primary-foreground font-semibold text-xl"
+          className="flex items-center gap-2 text-primary-foreground font-semibold text-xl"
         >
-          {brandName}
+          <img src={ProovIcon} alt="Proov" className="w-8 h-8" />
+          <span>{brandName}</span>
         </Link>
       </div>
 
