@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { ArrowLeft, Calendar } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import ProjectPreviewCard from '../components/ProjectPreviewCard';
 
 export default function NewProjectPage() {
   const [projectName, setProjectName] = useState('');
@@ -126,28 +127,12 @@ export default function NewProjectPage() {
             </div>
 
             {/* Preview card */}
-            {projectName && (
-              <div className="p-5 rounded-xl border border-border bg-card/50">
-                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-3">
-                  Preview
-                </p>
-                <h3 className="font-semibold text-foreground text-lg">
-                  {projectName}
-                </h3>
-                {(startDate || endDate) && (
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {startDate && formatDate(startDate)}
-                    {startDate && endDate && ' — '}
-                    {endDate && formatDate(endDate)}
-                  </p>
-                )}
-                {description && (
-                  <p className="text-sm text-muted-foreground mt-3 line-clamp-2">
-                    {description}
-                  </p>
-                )}
-              </div>
-            )}
+            <ProjectPreviewCard
+              projectName={projectName}
+              startDate={startDate}
+              endDate={endDate}
+              description={description}
+            />
           </div>
 
           {/* Actions */}
@@ -171,13 +156,4 @@ export default function NewProjectPage() {
       </main>
     </div>
   );
-}
-
-function formatDate(dateString: string): string {
-  const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
 }
