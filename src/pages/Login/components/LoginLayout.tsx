@@ -1,4 +1,7 @@
-import type { LoginLayoutProps } from '../components/types';
+interface LoginLayoutProps {
+  hero: React.ReactNode;
+  form: React.ReactNode;
+}
 
 export default function LoginLayout({ hero, form }: LoginLayoutProps) {
   return (

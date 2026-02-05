@@ -1,8 +1,16 @@
 import { Link } from 'react-router-dom';
-import type { LoginFormProps } from '../components/types';
 import LoginFooterLinks from './LoginFooterLinks';
 import LoginOAuthButton from './LoginOAuthButton';
 import { GoogleIcon, KakaoIcon, GitHubIcon } from './icons';
+
+interface LoginFormProps {
+  title: string;
+  subtitle: string;
+  googleLoginTo: string;
+  kakaoLoginTo: string;
+  githubLoginTo: string;
+  showEmailLogin?: boolean;
+}
 
 export default function LoginForm({
   title,

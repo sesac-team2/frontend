@@ -1,6 +1,10 @@
 import { Link } from 'react-router-dom';
-import type { LoginHeroProps } from '../components/types';
 import ProovIcon from '@/assets/proov.svg';
+
+export interface LoginHeroProps {
+  brandName: string;
+  brandTo: string;
+}
 
 export default function LoginHero({ brandName, brandTo }: LoginHeroProps) {
   return (
