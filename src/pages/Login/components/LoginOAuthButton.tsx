@@ -1,5 +1,4 @@
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
 
 export interface LoginOAuthButtonProps {
   to: string;
@@ -18,10 +17,10 @@ export default function LoginOAuthButton({
       className="w-full h-12 gap-3 text-base font-medium hover:bg-secondary transition-colors bg-transparent"
       asChild
     >
-      <Link to={to}>
+      <a href={to}>
         {icon}
         {providerLabel}
-      </Link>
+      </a>
     </Button>
   );
 }
