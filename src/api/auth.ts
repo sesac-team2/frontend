@@ -1,16 +1,9 @@
 import api from './axios';
-
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  picture?: string;
-}
+import type { User } from '@/types/user';
 
 export interface SocialLoginResponse {
   user: User;
-  accessToken: string;
-  refreshToken?: string;
+  token: string;
 }
 
 export const authApi = {
@@ -32,7 +25,16 @@ export const authApi = {
     const response = await api.post<SocialLoginResponse>(`/auth/login`, {
       provider,
       code,
+      redirect_uri: `http://localhost:5173/auth/${provider}/callback`,
     });
+    return response.data;
+  },
+
+  /**
+   * (추가) 현재 저장된 토큰으로 내 정보 가져오기 (새로고침 시 자동 로그인 용)
+   */
+  getMe: async () => {
+    const response = await api.get<User>('/auth/me');
     return response.data;
   },
 };

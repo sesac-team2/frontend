@@ -2,11 +2,13 @@
 import { useEffect } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { authApi } from '@/api/auth';
+import { useAuth } from '@/context/AuthContext';
 
 export default function AuthCallback() {
   const { provider } = useParams<{ provider: string }>(); // google, kakao, github 등
   const navigate = useNavigate();
   const location = useLocation();
+  const { login } = useAuth();
 
   useEffect(() => {
     const handleAuth = async () => {
@@ -24,21 +26,16 @@ export default function AuthCallback() {
           console.log(`${provider} 로그인 성공 (Token):`, accessToken);
           const data = await authApi.loginWithToken(provider, accessToken);
 
-          // 백엔드에서 준 서비스 전용 토큰 저장
-          localStorage.setItem('accessToken', data.accessToken);
-          if (data.refreshToken)
-            localStorage.setItem('refreshToken', data.refreshToken);
-
+          // Context 상태 업데이트
+          login(data.token, data.user);
           navigate('/projects');
         } else if (code && provider) {
           // 인증 코드가 온 경우 (Kakao, GitHub 등)
           console.log(`${provider} 인증 코드 발급:`, code);
           const data = await authApi.loginWithCode(provider, code);
 
-          localStorage.setItem('accessToken', data.accessToken);
-          if (data.refreshToken)
-            localStorage.setItem('refreshToken', data.refreshToken);
-
+          // Context 상태 업데이트
+          login(data.token, data.user);
           navigate('/projects');
         } else {
           console.error('인증 정보가 없습니다.');
@@ -52,7 +49,7 @@ export default function AuthCallback() {
     };
 
     handleAuth();
-  }, [provider, navigate, location]);
+  }, [provider, navigate, location, login]);
 
   return (
     <div className="flex items-center justify-center min-h-screen">
