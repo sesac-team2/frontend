@@ -3,7 +3,7 @@ import axios from 'axios';
 // 1. 기본 설정이 적용된 인스턴스 생성
 const api = axios.create({
   // 백엔드(Express) 주소. 도커로 띄운 백엔드가 5000번이라면 아래와 같이 설정합니다.
-  baseURL: 'http://localhost:5000/api',
+  baseURL: 'http://54.236.227.121.nip.io:5002',
   timeout: 5000, // 5초 동안 응답 없으면 취소
   headers: {
     'Content-Type': 'application/json',

@@ -9,6 +9,7 @@ import EditProjectPage from './pages/Projects/Edit';
 import PublicSharePage from './pages/Share';
 import NewTestimonialPage from './pages/Testimonials/New';
 import PlaceholderPage from './pages/PlaceholderPage';
+import AuthCallback from './pages/Login/AuthCallback';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/projects" element={<MainPage />} />
+        <Route path="/auth/:provider/callback" element={<AuthCallback />} />
 
         {/* Real Routes */}
         <Route path="/settings" element={<SettingsPage />} />
