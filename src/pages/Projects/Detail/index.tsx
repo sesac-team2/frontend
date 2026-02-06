@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -9,6 +9,7 @@ import OverviewTab from './components/OverviewTab';
 import ParticipantsTab from './components/ParticipantsTab';
 import { formatDate } from '../utils';
 import type { Participant, ProjectStatus } from './types';
+import ProovIcon from '@/assets/proov.svg';
 
 const mockProject = {
   id: '1',
@@ -84,11 +85,18 @@ export default function ProjectDetailPage() {
 
   const status = statusConfig[mockProject.status];
 
+  // ✅ 탭에서 사용할 값들 계산 (가독성)
+  const participantCount = mockParticipants.length;
+
+  const testimonialCount = useMemo(() => {
+    return mockParticipants.reduce((acc, p) => acc + p.testimonialCount, 0);
+  }, []);
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b border-border sticky top-0 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 z-10">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="max-w-5xl mx-auto px-6">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-4">
               <Link
@@ -96,9 +104,14 @@ export default function ProjectDetailPage() {
                 className="text-muted-foreground hover:text-foreground transition-colors"
               >
                 <ArrowLeft className="w-5 h-5" />
+                {/* Back만 넣으면 어떨지?*/}
               </Link>
-              <Link to="/" className="font-semibold text-lg text-foreground">
-                Contriboard
+              <Link
+                to="/"
+                className="flex items-center font-semibold text-lg text-foreground"
+              >
+                <img src={ProovIcon} alt="Proov" className="w-8 h-8" />
+                Proov {/* 필요한가? */}
               </Link>
             </div>
 
@@ -123,7 +136,7 @@ export default function ProjectDetailPage() {
 
       {/* Project header */}
       <div className="border-b border-border bg-card">
-        <div className="max-w-7xl mx-auto px-6 py-6">
+        <div className="max-w-5xl mx-auto px-6 py-6">
           <div className="flex items-start justify-between">
             <div className="space-y-3">
               <div className="flex items-center gap-3">
@@ -132,24 +145,26 @@ export default function ProjectDetailPage() {
                 </h1>
                 <Badge className={status.className}>{status.label}</Badge>
               </div>
+
+              {/* ✅ 탭에 따라 상단 지표를 하나만 보여주기 */}
               <div className="flex items-center gap-6 text-sm text-muted-foreground">
                 <div className="flex items-center gap-1.5">
                   <Calendar className="w-4 h-4" />
                   {formatDate(mockProject.startDate)} —{' '}
                   {formatDate(mockProject.endDate)}
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <Users className="w-4 h-4" />
-                  {mockParticipants.length} participants
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <FileText className="w-4 h-4" />
-                  {mockParticipants.reduce(
-                    (acc, p) => acc + p.testimonialCount,
-                    0,
-                  )}{' '}
-                  testimonials
-                </div>
+
+                {activeTab === 'overview' ? (
+                  <div className="flex items-center gap-1.5">
+                    <FileText className="w-4 h-4" />
+                    {testimonialCount} testimonials
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-1.5">
+                    <Users className="w-4 h-4" />
+                    {participantCount} participants
+                  </div>
+                )}
               </div>
             </div>
 
@@ -195,7 +210,7 @@ export default function ProjectDetailPage() {
       </div>
 
       {/* Main content */}
-      <main className="max-w-7xl mx-auto px-6 py-8">
+      <main className="max-w-5xl mx-auto px-6 py-8">
         {activeTab === 'overview' ? (
           <OverviewTab project={mockProject} participants={mockParticipants} />
         ) : (
