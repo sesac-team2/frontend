@@ -177,19 +177,10 @@ export default function EditProjectPage() {
                 Optional but helpful for teammates joining the project
               </p>
             </div>
-
-            {/* Preview card */}
-            <ProjectPreviewCard
-              projectName={projectName}
-              status={status}
-              startDate={startDate}
-              endDate={endDate}
-              description={description}
-            />
           </div>
 
           {/* Actions */}
-          <div className="flex justify-end gap-3 mt-12 pt-8 border-t border-border">
+          <div className="flex justify-end gap-3 mt-12 pt-8 border-border">
             <Button variant="ghost" asChild>
               <Link to={`/projects/${projectId}`}>Cancel</Link>
             </Button>

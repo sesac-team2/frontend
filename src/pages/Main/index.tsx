@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import ProjectsTab from './components/ProjectsTab';
 import ContributionSummaryTab from './components/ContributionSummaryTab';
 import { mockProjects, mockTestimonials } from './data';
+import ProovIcon from '@/assets/proov.svg';
 
 export default function MainPage() {
   const [activeTab, setActiveTab] = useState<'projects' | 'contributions'>(
@@ -18,8 +19,12 @@ export default function MainPage() {
       <header className="border-b border-border sticky top-0 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 z-10">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-center justify-between h-16">
-            <Link to="/" className="font-semibold text-lg text-foreground">
-              Contriboard
+            <Link
+              to="/"
+              className="flex items-center font-semibold text-lg text-foreground"
+            >
+              <img src={ProovIcon} alt="Proov" className="w-8 h-8" />
+              Proov
             </Link>
 
             <div className="flex items-center gap-4">
