@@ -32,7 +32,8 @@ function MessageIcon({ className }: MessageIconProps) {
 
 export default function ProjectCard({ project }: { project: Project }) {
   const status = statusConfig[project.status];
-  const dateRange = `${formatDate(project.startDate)} — ${formatDate(project.endDate)}`;
+  console.log(project.start_date);
+  const dateRange = `${formatDate(project.start_date)} — ${formatDate(project.end_date)}`;
 
   return (
     <Link to={`/projects/${project.id}`} className="block group">
@@ -70,11 +71,11 @@ export default function ProjectCard({ project }: { project: Project }) {
         <div className="flex items-center gap-4 text-sm text-muted-foreground">
           <div className="flex items-center gap-1.5">
             <Users className="w-4 h-4" />
-            <span>{project.participantCount} members</span>
+            <span>{project.participant_count} members</span>
           </div>
           <div className="flex items-center gap-1.5">
             <MessageIcon className="w-4 h-4" />
-            <span>{project.testimonialCount} testimonials</span>
+            <span>{project.testimonial_count} testimonials</span>
           </div>
         </div>
       </div>

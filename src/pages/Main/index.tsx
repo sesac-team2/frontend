@@ -5,13 +5,32 @@ import { Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ProjectsTab from './components/ProjectsTab';
 import ContributionSummaryTab from './components/ContributionSummaryTab';
-import { mockProjects, mockTestimonials } from './data';
+import { mockTestimonials } from './data';
 import ProovIcon from '@/assets/proov.svg';
+import api from '@/api/axios';
+import type { Project } from '@/types';
+import { useQuery } from '@tanstack/react-query';
+import { useAuth } from '@/context/AuthContext';
 
 export default function MainPage() {
   const [activeTab, setActiveTab] = useState<'projects' | 'contributions'>(
     'projects',
   );
+  const { user } = useAuth();
+
+  const lastName = user?.fullName?.[0] ?? 'U';
+
+  const { data: projects = [], isLoading } = useQuery({
+    queryKey: ['projects'],
+    queryFn: async () => {
+      const res = await api.get('/projects');
+      return res.data.data as Project[];
+    },
+  });
+
+  // ✅ “데이터 아직 안 왔는데 빈 상태 UI만 보이는 문제” 방지
+  const showEmptyProjectsOnly =
+    activeTab === 'projects' && !isLoading && projects.length === 0;
 
   return (
     <div className="min-h-screen bg-background">
@@ -34,11 +53,11 @@ export default function MainPage() {
               >
                 <Avatar className="w-7 h-7">
                   <AvatarFallback className="text-xs bg-primary text-primary-foreground">
-                    JD
+                    {lastName}
                   </AvatarFallback>
                 </Avatar>
                 <span className="hidden sm:inline text-sm font-medium text-foreground">
-                  John Doe
+                  {user?.fullName}
                 </span>
               </Link>
             </div>
@@ -48,51 +67,59 @@ export default function MainPage() {
 
       {/* Main content */}
       <main className="max-w-7xl mx-auto px-6 py-8">
-        {/* Page header */}
-        <div className="flex items-start justify-between mb-8">
-          <div>
-            <h1 className="text-2xl font-semibold text-foreground">
-              Dashboard
-            </h1>
-            <p className="text-muted-foreground mt-1">
-              Manage your projects and view your contributions
-            </p>
-          </div>
-
-          {/* Tab toggle */}
-          <div className="flex items-center p-1 bg-muted rounded-lg">
-            <button
-              onClick={() => setActiveTab('projects')}
-              className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-                activeTab === 'projects'
-                  ? 'bg-background text-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              My Projects
-            </button>
-            <button
-              onClick={() => setActiveTab('contributions')}
-              className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-                activeTab === 'contributions'
-                  ? 'bg-background text-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              My Contribution Summary
-            </button>
-          </div>
-        </div>
-
-        {activeTab === 'projects' ? (
-          <ProjectsTab projects={mockProjects} />
+        {isLoading ? (
+          <div className="text-sm text-muted-foreground">Loading...</div>
+        ) : showEmptyProjectsOnly ? (
+          <ProjectsTab projects={projects} />
         ) : (
-          <ContributionSummaryTab testimonials={mockTestimonials} />
+          <>
+            {/* Page header */}
+            <div className="flex items-start justify-between mb-8">
+              <div>
+                <h1 className="text-2xl font-semibold text-foreground">
+                  Dashboard
+                </h1>
+                <p className="text-muted-foreground mt-1">
+                  Manage your projects and view your contributions
+                </p>
+              </div>
+
+              {/* Tab toggle */}
+              <div className="flex items-center p-1 bg-muted rounded-lg">
+                <button
+                  onClick={() => setActiveTab('projects')}
+                  className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                    activeTab === 'projects'
+                      ? 'bg-background text-foreground shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  My Projects
+                </button>
+                <button
+                  onClick={() => setActiveTab('contributions')}
+                  className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                    activeTab === 'contributions'
+                      ? 'bg-background text-foreground shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  My Contribution Summary
+                </button>
+              </div>
+            </div>
+
+            {activeTab === 'projects' ? (
+              <ProjectsTab projects={projects} />
+            ) : (
+              <ContributionSummaryTab testimonials={mockTestimonials} />
+            )}
+          </>
         )}
       </main>
 
       {/* Fixed create button - only show on projects tab */}
-      {activeTab === 'projects' && (
+      {activeTab === 'projects' && !isLoading && projects.length > 0 && (
         <div className="fixed bottom-8 right-8">
           <Button asChild size="lg" className="gap-2 shadow-lg">
             <Link to="/projects/new">

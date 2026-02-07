@@ -3,10 +3,10 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { PenLine, UserPlus } from 'lucide-react';
 import InviteModal from './InviteModal';
-import type { Participant } from '../types';
+import type { ProjectMember } from '@/types';
 
 interface ParticipantsTabProps {
-  participants: Participant[];
+  participants: ProjectMember[];
 }
 
 export default function ParticipantsTab({
@@ -14,9 +14,8 @@ export default function ParticipantsTab({
 }: ParticipantsTabProps) {
   return (
     <div className="space-y-3">
-      {/* ✅ 상단 "5 Participants" 제거 + Invite 버튼을 작게/오른쪽으로 */}
+      {/* Invite 버튼 */}
       <div className="flex justify-end">
-        {/* InviteModal 내부 버튼을 조절할 수 있으면 size="sm" 넘기는 게 베스트 */}
         <InviteModal
           trigger={
             <Button
@@ -31,7 +30,6 @@ export default function ParticipantsTab({
         />
       </div>
 
-      {/* Participants table */}
       <div className="rounded-xl border border-border overflow-hidden bg-card">
         <table className="w-full">
           <thead className="bg-muted/50">
@@ -43,7 +41,7 @@ export default function ParticipantsTab({
                 Role
               </th>
               <th className="text-left text-sm font-medium text-muted-foreground px-4 py-3">
-                Testimonials
+                Testimonial
               </th>
               <th className="text-right text-sm font-medium text-muted-foreground px-4 py-3">
                 Actions
@@ -52,59 +50,71 @@ export default function ParticipantsTab({
           </thead>
 
           <tbody className="divide-y divide-border">
-            {participants.map((participant) => (
+            {participants.map((member) => (
               <tr
-                key={participant.id}
+                key={member.user_id}
                 className="hover:bg-muted/30 transition-colors"
               >
+                {/* Name */}
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-3">
                     <Avatar className="w-8 h-8">
-                      <AvatarFallback className="text-xs bg-secondary text-secondary-foreground">
-                        {participant.name
-                          .split(' ')
-                          .map((n) => n[0])
-                          .join('')}
-                      </AvatarFallback>
+                      {member.avatar_url ? (
+                        <img
+                          src={member.avatar_url}
+                          alt={member.full_name}
+                          className="w-full h-full object-cover rounded-full"
+                        />
+                      ) : (
+                        <AvatarFallback className="text-xs bg-secondary text-secondary-foreground">
+                          {member.full_name
+                            .split(' ')
+                            .map((n) => n[0])
+                            .join('')}
+                        </AvatarFallback>
+                      )}
                     </Avatar>
 
-                    <div>
-                      <p className="font-medium text-foreground text-sm">
-                        {participant.name}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {participant.email}
-                      </p>
-                    </div>
+                    <p className="font-medium text-foreground text-sm">
+                      {member.full_name}
+                    </p>
                   </div>
                 </td>
 
+                {/* Role */}
                 <td className="px-4 py-3">
-                  <span className="text-sm text-foreground">
-                    {participant.role}
-                  </span>
+                  <span className="text-sm text-foreground">{member.role}</span>
                 </td>
 
+                {/* Testimonial (현재 members 응답에는 정보가 없어서 placeholder) */}
                 <td className="px-4 py-3">
-                  <span className="text-sm text-muted-foreground">
-                    {participant.testimonialCount} written
-                  </span>
+                  <span className="text-sm text-muted-foreground">-</span>
                 </td>
 
+                {/* Actions */}
                 <td className="px-4 py-3 text-right">
-                  <div className="flex items-center justify-end">
-                    <Button variant="ghost" size="sm" asChild>
-                      <Link
-                        to={`/testimonials/new?participant=${participant.id}`}
-                      >
-                        <PenLine className="w-4 h-4 mr-1" />
-                        Write
-                      </Link>
-                    </Button>
-                  </div>
+                  <Button variant="ghost" size="sm" asChild>
+                    <Link
+                      to={`/testimonials/new?participant=${member.user_id}`}
+                    >
+                      <PenLine className="w-4 h-4 mr-1" />
+                      Write
+                    </Link>
+                  </Button>
                 </td>
               </tr>
             ))}
+
+            {participants.length === 0 && (
+              <tr>
+                <td
+                  colSpan={4}
+                  className="px-4 py-10 text-center text-sm text-muted-foreground"
+                >
+                  No participants yet.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
