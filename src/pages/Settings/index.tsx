@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useAuth } from '@/context/AuthContext';
+
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { ArrowLeft, Check } from 'lucide-react';
@@ -6,28 +8,41 @@ import { Link } from 'react-router-dom';
 
 import ProfileImageSection from './components/ProfileImageSection';
 import NameSection from './components/NameSection';
-import RoleSection from './components/RoleSection';
 import BioSection from './components/BioSection';
-import SocialConnectionsSection from './components/SocialConnectionsSection';
 import AccountActionsSection from './components/AccountActionsSection';
 
 export default function SettingsPage() {
-  const [name, setName] = useState('John Doe');
-  const [selectedRole, setSelectedRole] = useState('developer');
-  const [customRole, setCustomRole] = useState('');
-  const [bio, setBio] = useState(
-    'Full-stack developer passionate about building great user experiences',
-  );
+  const [name, setName] = useState('');
+  const [bio, setBio] = useState('');
+  const [profileImageUrl, setProfileImageUrl] = useState('');
   const [hasChanges, setHasChanges] = useState(false);
+
+  const { user, updateUser } = useAuth();
+
+  useEffect(() => {
+    if (user) {
+      setName(user.fullName);
+      setBio(user.bio || '');
+      setProfileImageUrl(user.avatarUrl || '');
+      console.log(user);
+    }
+  }, [user]);
 
   const handleChange = <T,>(setter: (value: T) => void, value: T) => {
     setter(value);
     setHasChanges(true);
   };
 
-  const handleSave = () => {
-    setHasChanges(false);
-    // Save logic here
+  const handleSave = async () => {
+    try {
+      await updateUser({
+        fullName: name,
+        bio: bio,
+      });
+      setHasChanges(false);
+    } catch (error) {
+      console.error('Failed to update profile:', error);
+    }
   };
 
   return (
@@ -44,7 +59,7 @@ export default function SettingsPage() {
                 <ArrowLeft className="w-5 h-5" />
               </Link>
               <h1 className="font-semibold text-lg text-foreground">
-                Profile Settings
+                프로필 설정
               </h1>
             </div>
 
@@ -54,7 +69,7 @@ export default function SettingsPage() {
               className="gap-2"
             >
               <Check className="w-4 h-4" />
-              Save Changes
+              변경 사항 저장
             </Button>
           </div>
         </div>
@@ -63,7 +78,7 @@ export default function SettingsPage() {
       {/* Main content */}
       <main className="max-w-3xl mx-auto px-6 py-8">
         <div className="space-y-10">
-          <ProfileImageSection />
+          <ProfileImageSection profileImageUrl={profileImageUrl} name={name} />
 
           <Separator />
 
@@ -74,26 +89,12 @@ export default function SettingsPage() {
 
           <Separator />
 
-          <RoleSection
-            selectedRole={selectedRole}
-            onRoleChange={(value) => handleChange(setSelectedRole, value)}
-            customRole={customRole}
-            onCustomRoleChange={(value) => handleChange(setCustomRole, value)}
-          />
-
-          <Separator />
-
           <BioSection
             bio={bio}
             onChange={(value) => handleChange(setBio, value)}
           />
 
           <Separator />
-
-          <SocialConnectionsSection />
-
-          <Separator />
-
           <AccountActionsSection />
         </div>
       </main>

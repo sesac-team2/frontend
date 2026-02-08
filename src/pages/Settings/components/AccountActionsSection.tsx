@@ -1,3 +1,4 @@
+import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import {
   AlertDialog,
@@ -11,15 +12,23 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { LogOut, Trash2 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export default function AccountActionsSection() {
+  const { logout, deleteAccount } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
   return (
     <section className="space-y-6">
       <div>
-        <h2 className="text-lg font-semibold text-foreground">Account</h2>
+        <h2 className="text-lg font-semibold text-foreground">계정 관리</h2>
         <p className="text-sm text-muted-foreground mt-1">
-          Manage your account settings
+          계정 설정을 관리합니다
         </p>
       </div>
 
@@ -27,47 +36,47 @@ export default function AccountActionsSection() {
         {/* Log out */}
         <div className="flex items-center justify-between p-4 rounded-lg border border-border bg-card">
           <div>
-            <p className="font-medium text-foreground">Log out</p>
+            <p className="font-medium text-foreground">로그아웃</p>
             <p className="text-sm text-muted-foreground">
-              Sign out of your account on this device
+              현재 기기에서 로그아웃합니다
             </p>
           </div>
-          <Button variant="outline" asChild>
-            <Link to="/login" className="gap-2">
-              <LogOut className="w-4 h-4" />
-              Log out
-            </Link>
+          <Button variant="outline" onClick={handleLogout} className="gap-2">
+            <LogOut className="w-4 h-4" />
+            로그아웃
           </Button>
         </div>
 
         {/* Delete account */}
         <div className="flex items-center justify-between p-4 rounded-lg border border-destructive/30 bg-destructive/5">
           <div>
-            <p className="font-medium text-foreground">Delete account</p>
+            <p className="font-medium text-foreground">회원 탈퇴</p>
             <p className="text-sm text-muted-foreground">
-              Permanently delete your account and all data
+              계정과 모든 데이터를 영구적으로 삭제합니다
             </p>
           </div>
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant="destructive" className="gap-2">
                 <Trash2 className="w-4 h-4" />
-                Delete
+                탈퇴
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                <AlertDialogTitle>정말 탈퇴하시겠습니까?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  This action cannot be undone. This will permanently delete
-                  your account and remove all your data including testimonials
-                  you have written and received.
+                  이 작업은 되돌릴 수 없습니다. 회원님의 계정과 작성하신 리뷰 등
+                  모든 데이터가 영구적으로 삭제됩니다.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                  Delete Account
+                <AlertDialogCancel>취소</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={deleteAccount}
+                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                >
+                  탈퇴하기
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
