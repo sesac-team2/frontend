@@ -1,68 +1,18 @@
-import { useState, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Calendar, Users, FileText, Pencil, ArrowLeft } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import LeaveProjectModal from '@/components/LeaveProjectModal';
 import OverviewTab from './components/OverviewTab';
 import ParticipantsTab from './components/ParticipantsTab';
 import { formatDate } from '../utils';
-import type { Participant, ProjectStatus } from './types';
 import ProovIcon from '@/assets/proov.svg';
 
-const mockProject = {
-  id: '1',
-  name: 'E-commerce Platform Redesign',
-  status: 'in_progress' as ProjectStatus,
-  startDate: '2025-10-01',
-  endDate: '2026-03-31',
-  description:
-    'Complete redesign of our e-commerce platform focusing on improved checkout flow, mobile responsiveness, and enhanced product discovery features.',
-};
-
-const mockParticipants: Participant[] = [
-  {
-    id: '1',
-    name: 'John Doe',
-    role: 'Developer',
-    email: 'john@example.com',
-    testimonialCount: 3,
-    status: 'active',
-  },
-  {
-    id: '2',
-    name: 'Sarah Chen',
-    role: 'Designer',
-    email: 'sarah@example.com',
-    testimonialCount: 5,
-    status: 'active',
-  },
-  {
-    id: '3',
-    name: 'Mike Johnson',
-    role: 'Developer',
-    email: 'mike@example.com',
-    testimonialCount: 2,
-    status: 'active',
-  },
-  {
-    id: '4',
-    name: 'Emily Park',
-    role: 'Product Manager',
-    email: 'emily@example.com',
-    testimonialCount: 4,
-    status: 'active',
-  },
-  {
-    id: '5',
-    name: 'Alex Kim',
-    role: 'Developer',
-    email: 'alex@example.com',
-    testimonialCount: 0,
-    status: 'pending',
-  },
-];
+import type { ProjectStatus, ProjectDetail } from '@/types';
+import { useAuth } from '@/context/AuthContext';
+import { projectApi } from '@/api/project';
 
 const statusConfig: Record<
   ProjectStatus,
@@ -79,22 +29,91 @@ const statusConfig: Record<
 };
 
 export default function ProjectDetailPage() {
+  const { id } = useParams<{ id: string }>();
+  const { user } = useAuth();
+
   const [activeTab, setActiveTab] = useState<'overview' | 'participants'>(
     'overview',
   );
 
-  const status = statusConfig[mockProject.status];
+  const [projectDetail, setProjectDetail] = useState<ProjectDetail | null>(
+    null,
+  );
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // ✅ 탭에서 사용할 값들 계산 (가독성)
-  const participantCount = mockParticipants.length;
+  useEffect(() => {
+    if (!id) return;
 
-  const testimonialCount = useMemo(() => {
-    return mockParticipants.reduce((acc, p) => acc + p.testimonialCount, 0);
-  }, []);
+    const run = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const detail = await projectApi.getProjectDetail(id);
+        console.log(detail);
+        setProjectDetail(detail);
+      } catch (e: any) {
+        setError(e?.message ?? '프로젝트 상세를 불러오지 못했어요.');
+        setProjectDetail(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    run();
+  }, [id]);
+
+  const participants = projectDetail?.members ?? [];
+  const participantCount = participants.length;
+
+  // testimonial_count가 detail 응답에 없다면 0(또는 목록에서 가져오려면 Context/prop 필요)
+  const testimonialCount = useMemo(() => 0, []);
+
+  const lastName = user?.fullName?.[0] ?? 'U';
+  const displayName = user?.fullName ?? '';
+
+  if (isLoading && !projectDetail) {
+    return (
+      <div className="min-h-screen bg-background">
+        <main className="max-w-5xl mx-auto px-6 py-8">
+          <div className="text-sm text-muted-foreground">Loading...</div>
+        </main>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background">
+        <main className="max-w-5xl mx-auto px-6 py-8">
+          <div className="text-sm text-red-500">{error}</div>
+          <div className="mt-4">
+            <Button asChild variant="outline">
+              <Link to="/projects">Back</Link>
+            </Button>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  if (!projectDetail) {
+    return (
+      <div className="min-h-screen bg-background">
+        <main className="max-w-5xl mx-auto px-6 py-8">
+          <div className="text-sm text-muted-foreground">
+            프로젝트를 찾을 수 없어요.
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  const status = statusConfig[projectDetail.status as ProjectStatus];
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
       <header className="border-b border-border sticky top-0 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 z-10">
         <div className="max-w-5xl mx-auto px-6">
           <div className="flex items-center justify-between h-16">
@@ -104,65 +123,62 @@ export default function ProjectDetailPage() {
                 className="text-muted-foreground hover:text-foreground transition-colors"
               >
                 <ArrowLeft className="w-5 h-5" />
-                {/* Back만 넣으면 어떨지?*/}
               </Link>
               <Link
                 to="/"
                 className="flex items-center font-semibold text-lg text-foreground"
               >
                 <img src={ProovIcon} alt="Proov" className="w-8 h-8" />
-                Proov {/* 필요한가? */}
+                Proov
               </Link>
             </div>
 
-            <div className="flex items-center gap-4">
-              <Link
-                to="/settings"
-                className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted transition-colors"
-              >
-                <Avatar className="w-7 h-7">
-                  <AvatarFallback className="text-xs bg-primary text-primary-foreground">
-                    JD
-                  </AvatarFallback>
-                </Avatar>
-                <span className="hidden sm:inline text-sm font-medium text-foreground">
-                  John Doe
-                </span>
-              </Link>
-            </div>
+            <Link
+              to="/settings"
+              className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted transition-colors"
+            >
+              <Avatar className="w-7 h-7">
+                <AvatarFallback className="text-xs bg-primary text-primary-foreground">
+                  {lastName}
+                </AvatarFallback>
+              </Avatar>
+              <span className="hidden sm:inline text-sm font-medium text-foreground">
+                {displayName}
+              </span>
+            </Link>
           </div>
         </div>
       </header>
 
-      {/* Project header */}
       <div className="border-b border-border bg-card">
         <div className="max-w-5xl mx-auto px-6 py-6">
           <div className="flex items-start justify-between">
             <div className="space-y-3">
               <div className="flex items-center gap-3">
                 <h1 className="text-2xl font-semibold text-foreground">
-                  {mockProject.name}
+                  {projectDetail.name}
                 </h1>
-                <Badge className={status.className}>{status.label}</Badge>
+                {status && (
+                  <Badge className={status.className}>{status.label}</Badge>
+                )}
               </div>
 
-              {/* ✅ 탭에 따라 상단 지표를 하나만 보여주기 */}
               <div className="flex items-center gap-6 text-sm text-muted-foreground">
                 <div className="flex items-center gap-1.5">
                   <Calendar className="w-4 h-4" />
-                  {formatDate(mockProject.startDate)} —{' '}
-                  {formatDate(mockProject.endDate)}
+                  {formatDate(projectDetail.startDate)} —{' '}
+                  {formatDate(projectDetail.endDate)}
                 </div>
 
                 {activeTab === 'overview' ? (
                   <div className="flex items-center gap-1.5">
                     <FileText className="w-4 h-4" />
-                    {testimonialCount} testimonials
+                    {`${testimonialCount} testimonials`}
                   </div>
                 ) : (
                   <div className="flex items-center gap-1.5">
                     <Users className="w-4 h-4" />
-                    {participantCount} participants
+                    {`${participantCount} participants`}
                   </div>
                 )}
               </div>
@@ -174,16 +190,15 @@ export default function ProjectDetailPage() {
                 className="gap-2 bg-transparent"
                 asChild
               >
-                <Link to={`/projects/${mockProject.id}/edit`}>
+                <Link to={`/projects/${projectDetail.id}/edit`}>
                   <Pencil className="w-4 h-4" />
                   Edit
                 </Link>
               </Button>
-              <LeaveProjectModal projectName={mockProject.name} />
+              <LeaveProjectModal projectName={projectDetail.name} />
             </div>
           </div>
 
-          {/* Tabs */}
           <div className="flex items-center gap-1 mt-6 -mb-px">
             <button
               onClick={() => setActiveTab('overview')}
@@ -209,12 +224,11 @@ export default function ProjectDetailPage() {
         </div>
       </div>
 
-      {/* Main content */}
       <main className="max-w-5xl mx-auto px-6 py-8">
         {activeTab === 'overview' ? (
-          <OverviewTab project={mockProject} participants={mockParticipants} />
+          <OverviewTab project={projectDetail} participants={participants} />
         ) : (
-          <ParticipantsTab participants={mockParticipants} />
+          <ParticipantsTab participants={participants} />
         )}
       </main>
     </div>

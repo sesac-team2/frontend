@@ -1,43 +1,4 @@
-import type { Project, Testimonial, ProjectStatus } from '@/types';
-
-export const mockProjects: Project[] = [
-  {
-    id: '1',
-    name: 'E-commerce Platform Redesign',
-    status: 'in_progress',
-    startDate: '2025-10-01',
-    endDate: '2026-03-31',
-    participantCount: 8,
-    testimonialCount: 12,
-  },
-  {
-    id: '2',
-    name: 'Mobile App MVP',
-    status: 'completed',
-    startDate: '2025-06-01',
-    endDate: '2025-09-30',
-    participantCount: 5,
-    testimonialCount: 15,
-  },
-  {
-    id: '3',
-    name: 'API Integration Project',
-    status: 'in_progress',
-    startDate: '2025-12-01',
-    endDate: '2026-04-30',
-    participantCount: 6,
-    testimonialCount: 8,
-  },
-  {
-    id: '4',
-    name: 'Internal Dashboard',
-    status: 'completed',
-    startDate: '2025-08-01',
-    endDate: '2025-11-30',
-    participantCount: 4,
-    testimonialCount: 10,
-  },
-];
+import type { Testimonial } from '@/types';
 
 export const mockTestimonials: Testimonial[] = [
   {
@@ -91,20 +52,6 @@ export const mockTestimonials: Testimonial[] = [
     keywords: ['Security', 'Reliability', 'Time Management'],
   },
 ];
-
-export const statusConfig: Record<
-  ProjectStatus,
-  { label: string; className: string }
-> = {
-  in_progress: {
-    label: 'In Progress',
-    className: 'bg-accent text-accent-foreground hover:bg-accent',
-  },
-  completed: {
-    label: 'Completed',
-    className: 'bg-success text-success-foreground hover:bg-success',
-  },
-};
 
 export function formatDate(dateString: string): string {
   const date = new Date(dateString);

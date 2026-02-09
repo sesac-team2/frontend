@@ -25,23 +25,23 @@ function App() {
         </Route>
 
         {/* 로그인 한 사람만 갈 수 있는 곳 */}
-        <Route element={<RequireAuth />}>
-          <Route path="/projects" element={<MainPage />} />
+        {/* <Route element={<RequireAuth />}> */}
+        <Route path="/projects" element={<MainPage />} />
 
-          {/* Real Routes */}
-          <Route path="/settings" element={<SettingsPage />} />
-          <Route path="/projects/new" element={<NewProjectPage />} />
-          <Route path="/projects/:id" element={<ProjectDetailPage />} />
-          <Route path="/projects/:id/edit" element={<EditProjectPage />} />
-          <Route path="/share/:id" element={<PublicSharePage />} />
-          <Route path="/testimonials/new" element={<NewTestimonialPage />} />
+        {/* Real Routes */}
+        <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/projects/new" element={<NewProjectPage />} />
+        <Route path="/projects/:id" element={<ProjectDetailPage />} />
+        <Route path="/projects/:id/edit" element={<EditProjectPage />} />
+        <Route path="/share/:id" element={<PublicSharePage />} />
+        <Route path="/testimonials/new" element={<NewTestimonialPage />} />
 
-          {/* Placeholder Routes */}
-          <Route
-            path="/profile-setup"
-            element={<PlaceholderPage title="Profile Setup" />}
-          />
-        </Route>
+        {/* Placeholder Routes */}
+        <Route
+          path="/profile-setup"
+          element={<PlaceholderPage title="Profile Setup" />}
+        />
+        {/* </Route> */}
 
         <Route path="*" element={<div>페이지를 찾을 수 없습니다!</div>} />
       </Routes>

@@ -9,8 +9,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal, Users } from 'lucide-react';
-import type { Project } from '@/types';
-import { statusConfig, formatDate } from '../data';
+import type { Project, ProjectStatus } from '@/types';
+import { formatDate } from '../data';
 
 interface MessageIconProps {
   className?: string;
@@ -29,6 +29,20 @@ function MessageIcon({ className }: MessageIconProps) {
     </svg>
   );
 }
+
+const statusConfig: Record<
+  ProjectStatus,
+  { label: string; className: string }
+> = {
+  in_progress: {
+    label: 'in_progress',
+    className: 'bg-accent text-accent-foreground hover:bg-accent',
+  },
+  completed: {
+    label: 'completed',
+    className: 'bg-success text-success-foreground hover:bg-success',
+  },
+};
 
 export default function ProjectCard({ project }: { project: Project }) {
   const status = statusConfig[project.status];

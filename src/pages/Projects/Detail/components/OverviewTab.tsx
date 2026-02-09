@@ -1,9 +1,9 @@
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import type { Participant, Project } from '../types';
+import type { ProjectDetail, ProjectMember } from '@/types';
 
 interface OverviewTabProps {
-  project: Project;
-  participants: Participant[];
+  project: ProjectDetail;
+  participants: ProjectMember[]; // ✅ members 그대로 받기
 }
 
 export default function OverviewTab({
@@ -11,7 +11,6 @@ export default function OverviewTab({
   participants,
 }: OverviewTabProps) {
   return (
-    // ✅ 전체를 가운데로
     <div className="mx-auto w-full max-w-5xl space-y-6">
       {/* Description */}
       <div className="p-6 rounded-xl border border-border bg-card">
@@ -23,39 +22,50 @@ export default function OverviewTab({
         </p>
       </div>
 
-      {/* Recent activity */}
+      {/* Recent activity (임시 UI) */}
       <div className="p-6 rounded-xl border border-border bg-card">
         <h3 className="font-semibold text-foreground mb-4">Recent Activity</h3>
 
         <div className="space-y-4">
-          {participants.slice(0, 3).map((participant) => (
-            <div key={participant.id} className="flex items-start gap-3">
+          {participants.slice(0, 3).map((member) => (
+            <div key={member.userId} className="flex items-start gap-3">
               <Avatar className="w-8 h-8">
-                <AvatarFallback className="text-xs bg-secondary text-secondary-foreground">
-                  {participant.name
-                    .split(' ')
-                    .map((n) => n[0])
-                    .join('')}
-                </AvatarFallback>
+                {member.avatarUrl ? (
+                  <img
+                    src={member.avatarUrl}
+                    alt={member.fullName}
+                    className="w-full h-full object-cover rounded-full"
+                  />
+                ) : (
+                  <AvatarFallback className="text-xs bg-secondary text-secondary-foreground">
+                    {member.fullName
+                      .split(' ')
+                      .map((n) => n[0])
+                      .join('')}
+                  </AvatarFallback>
+                )}
               </Avatar>
 
               <div>
                 <p className="text-sm">
                   <span className="font-medium text-foreground">
-                    {participant.name}
+                    {member.fullName}
                   </span>
                   <span className="text-muted-foreground">
                     {' '}
                     wrote a testimonial
                   </span>
                 </p>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  2 days ago
-                </p>
+                <p className="text-xs text-muted-foreground mt-0.5">Recently</p>
               </div>
             </div>
           ))}
         </div>
+
+        {/* 참가자가 0명일 때 */}
+        {participants.length === 0 && (
+          <p className="text-sm text-muted-foreground">No recent activity.</p>
+        )}
       </div>
     </div>
   );
