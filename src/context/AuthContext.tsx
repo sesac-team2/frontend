@@ -8,6 +8,12 @@ interface AuthContextType {
   isLoading: boolean;
   login: (token: string, user: User) => void;
   logout: () => void;
+  updateUser: (data: {
+    fullName?: string;
+    bio?: string;
+    avatarUrl?: string;
+  }) => Promise<void>;
+  deleteAccount: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -24,6 +30,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         try {
           // 토큰이 있으면 내 정보 요청
           const userData = await authApi.getMe();
+          console.log(userData);
           setUser(userData);
         } catch (error) {
           console.error('자동 로그인 실패:', error);
@@ -51,6 +58,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     window.location.href = '/login';
   };
 
+  const updateUser = async (data: {
+    fullName?: string;
+    bio?: string;
+    avatarUrl?: string;
+  }) => {
+    try {
+      const updatedUser = await authApi.putMe(data);
+      setUser(updatedUser);
+    } catch (error) {
+      console.error('프로필 업데이트 실패:', error);
+      throw error;
+    }
+  };
+
+  const deleteAccount = async () => {
+    try {
+      await authApi.deleteAccount();
+      logout();
+    } catch (error) {
+      console.error('회원 탈퇴 실패:', error);
+      throw error;
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -59,6 +90,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         isLoading,
         login,
         logout,
+        updateUser,
+        deleteAccount,
       }}
     >
       {children}
