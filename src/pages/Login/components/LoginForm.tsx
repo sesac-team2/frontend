@@ -24,7 +24,7 @@ export default function LoginForm({
       {/* mobile brand */}
       <div className="lg:hidden mb-8">
         <Link to="/" className="text-foreground font-semibold text-xl">
-          Contriboard
+          Poov
         </Link>
       </div>
 

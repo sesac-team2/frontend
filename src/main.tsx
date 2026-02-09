@@ -1,15 +1,23 @@
-import React from 'react';
+if (import.meta.env.DEV) {
+  const { worker } = await import('./mocks/browser');
+  await worker.start();
+}
+
+// import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import './assets/index.css';
 import App from './App';
 import { AuthProvider } from './context/AuthContext';
+import { ProjectProvider } from './context/ProjectContext';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   // <React.StrictMode>
   <BrowserRouter>
     <AuthProvider>
-      <App />
+      <ProjectProvider>
+        <App />
+      </ProjectProvider>
     </AuthProvider>
   </BrowserRouter>,
   // </React.StrictMode>,

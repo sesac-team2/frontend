@@ -1,8 +1,13 @@
 import axios from 'axios';
 
+//test msw
+const baseURL = import.meta.env.DEV
+  ? '' // 예: /projects 로 요청 → MSW handlers의 rest.get('/projects')가 잡음
+  : 'http://54.236.227.121.nip.io:5002';
+
 // 1. 기본 설정이 적용된 인스턴스 생성
 const api = axios.create({
-  baseURL: 'http://54.236.227.121.nip.io:5002',
+  baseURL /* : 'http://54.236.227.121.nip.io:5002' */,
   timeout: 5000,
   headers: {
     'Content-Type': 'application/json',
