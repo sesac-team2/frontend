@@ -52,22 +52,22 @@ export default function ParticipantsTab({
           <tbody className="divide-y divide-border">
             {participants.map((member) => (
               <tr
-                key={member.user_id}
+                key={member.userId}
                 className="hover:bg-muted/30 transition-colors"
               >
                 {/* Name */}
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-3">
                     <Avatar className="w-8 h-8">
-                      {member.avatar_url ? (
+                      {member.avatarUrl ? (
                         <img
-                          src={member.avatar_url}
-                          alt={member.full_name}
+                          src={member.avatarUrl}
+                          alt={member.fullName}
                           className="w-full h-full object-cover rounded-full"
                         />
                       ) : (
                         <AvatarFallback className="text-xs bg-secondary text-secondary-foreground">
-                          {member.full_name
+                          {member.fullName
                             .split(' ')
                             .map((n) => n[0])
                             .join('')}
@@ -76,7 +76,7 @@ export default function ParticipantsTab({
                     </Avatar>
 
                     <p className="font-medium text-foreground text-sm">
-                      {member.full_name}
+                      {member.fullName}
                     </p>
                   </div>
                 </td>
@@ -94,9 +94,7 @@ export default function ParticipantsTab({
                 {/* Actions */}
                 <td className="px-4 py-3 text-right">
                   <Button variant="ghost" size="sm" asChild>
-                    <Link
-                      to={`/testimonials/new?participant=${member.user_id}`}
-                    >
+                    <Link to={`/testimonials/new?participant=${member.userId}`}>
                       <PenLine className="w-4 h-4 mr-1" />
                       Write
                     </Link>

@@ -9,30 +9,30 @@ export const handlers = [
         name: 'Mock Project1',
         description: 'mock project1',
         status: 'in_progress',
-        start_date: '2025-10-01',
-        end_date: '2026-03-31',
-        participant_count: 2,
-        testimonial_count: 1,
+        startDate: '2025-10-01',
+        endDate: '2026-03-31',
+        participantCount: 2,
+        testimonialCount: 1,
       },
       {
         id: '2',
         name: 'Mock Project2',
         description: 'mock project2',
         status: 'completed',
-        start_date: '2025-01-01',
-        end_date: '2025-03-01',
-        participant_count: 3,
-        testimonial_count: 5,
+        startDate: '2025-01-01',
+        endDate: '2025-03-01',
+        participantCount: 3,
+        testimonialCount: 5,
       },
       {
         id: '3',
         name: 'Mock Project3',
         description: 'Mock Project3',
         status: 'completed',
-        start_date: '2025-01-01',
-        end_date: '2025-03-01',
-        participant_count: 4,
-        testimonial_count: 4,
+        startDate: '2025-01-01',
+        endDate: '2025-03-01',
+        participantCount: 4,
+        testimonialCount: 4,
       },
     ];
 
@@ -52,7 +52,6 @@ export const handlers = [
   rest.get('/projects/:id', (req, res, ctx) => {
     const { id } = req.params;
 
-    // (선택) 목록에 없는 id로 접근하면 404처럼 동작
     if (!['1', '2', '3'].includes(id as string)) {
       return res(ctx.status(404));
     }
@@ -62,18 +61,18 @@ export const handlers = [
         id,
         name: `Mock Project ${id}`,
         description: `mock project ${id}`,
-        status: Number(id) % 2 === 0 ? 'completed' : 'in_progress',
-        start_date: '2025-01-01',
-        end_date: '2025-03-01',
+        status: Number(id) % 2 === 0 ? 'completed' : 'inProgress',
+        startDate: '2025-01-01',
+        endDate: '2025-03-01',
         creator: {
           id: 'c1',
-          full_name: 'John Doe',
+          fullName: 'John Doe',
         },
         members: Array.from({ length: 3 }).map((_, i) => ({
-          user_id: `${id}-${i + 1}`, // ✅ user_id 유니크하게
-          full_name: `User ${i + 1}`,
+          userId: `${id}-${i + 1}`,
+          fullName: `User ${i + 1}`,
           role: 'member',
-          avatar_url: undefined,
+          avatarUrl: undefined,
         })),
       }),
     );

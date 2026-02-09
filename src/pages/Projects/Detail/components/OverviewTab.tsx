@@ -28,17 +28,17 @@ export default function OverviewTab({
 
         <div className="space-y-4">
           {participants.slice(0, 3).map((member) => (
-            <div key={member.user_id} className="flex items-start gap-3">
+            <div key={member.userId} className="flex items-start gap-3">
               <Avatar className="w-8 h-8">
-                {member.avatar_url ? (
+                {member.avatarUrl ? (
                   <img
-                    src={member.avatar_url}
-                    alt={member.full_name}
+                    src={member.avatarUrl}
+                    alt={member.fullName}
                     className="w-full h-full object-cover rounded-full"
                   />
                 ) : (
                   <AvatarFallback className="text-xs bg-secondary text-secondary-foreground">
-                    {member.full_name
+                    {member.fullName
                       .split(' ')
                       .map((n) => n[0])
                       .join('')}
@@ -49,7 +49,7 @@ export default function OverviewTab({
               <div>
                 <p className="text-sm">
                   <span className="font-medium text-foreground">
-                    {member.full_name}
+                    {member.fullName}
                   </span>
                   <span className="text-muted-foreground">
                     {' '}

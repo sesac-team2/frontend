@@ -7,9 +7,7 @@ import ProjectsTab from './components/ProjectsTab';
 import ContributionSummaryTab from './components/ContributionSummaryTab';
 import { mockTestimonials } from './data';
 import ProovIcon from '@/assets/proov.svg';
-import api from '@/api/axios';
-import type { Project } from '@/types';
-import { useQuery } from '@tanstack/react-query';
+import { useProjects } from '@/context/ProjectContext';
 import { useAuth } from '@/context/AuthContext';
 
 export default function MainPage() {
@@ -20,13 +18,7 @@ export default function MainPage() {
 
   const lastName = user?.fullName?.[0] ?? 'U';
 
-  const { data: projects = [], isLoading } = useQuery({
-    queryKey: ['projects'],
-    queryFn: async () => {
-      const res = await api.get('/projects');
-      return res.data.data as Project[];
-    },
-  });
+  const { projects, isLoading } = useProjects();
 
   // ✅ “데이터 아직 안 왔는데 빈 상태 UI만 보이는 문제” 방지
   const showEmptyProjectsOnly =

@@ -9,8 +9,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal, Users } from 'lucide-react';
-import type { Project } from '@/types';
-import { statusConfig, formatDate } from '../data';
+import type { Project, ProjectStatus } from '@/types';
+import { formatDate } from '../data';
 
 interface MessageIconProps {
   className?: string;
@@ -30,10 +30,23 @@ function MessageIcon({ className }: MessageIconProps) {
   );
 }
 
+const statusConfig: Record<
+  ProjectStatus,
+  { label: string; className: string }
+> = {
+  in_progress: {
+    label: 'in_progress',
+    className: 'bg-accent text-accent-foreground hover:bg-accent',
+  },
+  completed: {
+    label: 'completed',
+    className: 'bg-success text-success-foreground hover:bg-success',
+  },
+};
+
 export default function ProjectCard({ project }: { project: Project }) {
   const status = statusConfig[project.status];
-  console.log(project.start_date);
-  const dateRange = `${formatDate(project.start_date)} — ${formatDate(project.end_date)}`;
+  const dateRange = `${formatDate(project.startDate)} — ${formatDate(project.endDate)}`;
 
   return (
     <Link to={`/projects/${project.id}`} className="block group">
@@ -71,11 +84,11 @@ export default function ProjectCard({ project }: { project: Project }) {
         <div className="flex items-center gap-4 text-sm text-muted-foreground">
           <div className="flex items-center gap-1.5">
             <Users className="w-4 h-4" />
-            <span>{project.participant_count} members</span>
+            <span>{project.participantCount} members</span>
           </div>
           <div className="flex items-center gap-1.5">
             <MessageIcon className="w-4 h-4" />
-            <span>{project.testimonial_count} testimonials</span>
+            <span>{project.testimonialCount} testimonials</span>
           </div>
         </div>
       </div>
