@@ -17,12 +17,13 @@ export default function SettingsPage() {
   const [bio, setBio] = useState('');
   const [profileImageUrl, setProfileImageUrl] = useState('');
   const [hasChanges, setHasChanges] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const { user, updateUser } = useAuth();
 
   useEffect(() => {
     if (user) {
-      setName(user.fullName);
+      setName(user.fullName || '');
       setBio(user.bio || '');
       setProfileImageUrl(user.avatarUrl || '');
       console.log(user);
@@ -36,44 +37,60 @@ export default function SettingsPage() {
 
   const handleSave = async () => {
     try {
+      let finalAvatarUrl = profileImageUrl;
+
+      // 1. 새 이미지가 선택된 경우 업로드 진행
+      if (selectedFile) {
+        // (선택) 기존 이미지가 Supabase에 있다면 삭제
+        if (
+          user?.avatarUrl &&
+          user.avatarUrl.includes('supabase') && // 간단한 체크
+          user.avatarUrl.includes('profileImage')
+        ) {
+          const oldFilePath = user.avatarUrl.split('/').pop();
+          if (oldFilePath) {
+            await supabase.storage.from('profileImage').remove([oldFilePath]);
+          }
+        }
+
+        const fileExt = selectedFile.name.split('.').pop();
+        const fileName = `${user?.id}-${Math.random()}.${fileExt}`;
+        const filePath = `${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('profileImage')
+          .upload(filePath, selectedFile);
+
+        if (uploadError) throw uploadError;
+
+        const { data } = supabase.storage
+          .from('profileImage')
+          .getPublicUrl(filePath);
+
+        if (data) {
+          finalAvatarUrl = data.publicUrl;
+        }
+      }
+
       await updateUser({
         fullName: name,
         bio: bio,
-        avatarUrl: profileImageUrl, // 이미지 URL도 함께 전송
+        avatarUrl: finalAvatarUrl,
       });
       setHasChanges(false);
+      setSelectedFile(null); // 초기화
     } catch (error) {
       console.error('Failed to update profile:', error);
+      alert('프로필 업데이트에 실패했습니다.');
     }
   };
 
-  const handleImageUpload = async (file: File) => {
-    try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${user?.id}-${Math.random()}.${fileExt}`;
-      const filePath = `${fileName}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('profileImage')
-        .upload(filePath, file);
-
-      if (uploadError) {
-        throw uploadError;
-      }
-
-      const { data } = supabase.storage
-        .from('profileImage')
-        .getPublicUrl(filePath);
-
-      if (data) {
-        setProfileImageUrl(data.publicUrl);
-        setHasChanges(true); // 변경 사항 있음으로 표시
-        console.log('Image uploaded successfully:', data.publicUrl);
-      }
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      alert('이미지 업로드에 실패했습니다.');
-    }
+  const handleImageUpload = (file: File) => {
+    // 파일을 즉시 업로드하지 않고, 상태에 저장하고 미리보기 URL만 생성
+    setSelectedFile(file);
+    const previewUrl = URL.createObjectURL(file);
+    setProfileImageUrl(previewUrl);
+    setHasChanges(true);
   };
 
   return (

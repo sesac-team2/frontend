@@ -54,7 +54,7 @@ export default function ProfileImageSection({
       <div className="flex items-center gap-6">
         <div className="relative cursor-pointer" onClick={handleImageClick}>
           <Avatar className="w-24 h-24 hover:opacity-90 transition-opacity">
-            <AvatarImage src={profileImageUrl} />
+            <AvatarImage src={profileImageUrl || undefined} />
             <AvatarFallback className="text-2xl bg-primary text-primary-foreground">
               {name ? name.charAt(0).toUpperCase() : 'U'}
             </AvatarFallback>
