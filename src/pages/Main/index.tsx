@@ -60,7 +60,7 @@ export default function MainPage() {
       {/* Main content */}
       <main className="max-w-7xl mx-auto px-6 py-8">
         {isLoading ? (
-          <div className="text-sm text-muted-foreground">Loading...</div>
+          <div className="text-sm text-muted-foreground">로딩 중...</div>
         ) : showEmptyProjectsOnly ? (
           <ProjectsTab projects={projects} />
         ) : (
@@ -69,10 +69,10 @@ export default function MainPage() {
             <div className="flex items-start justify-between mb-8">
               <div>
                 <h1 className="text-2xl font-semibold text-foreground">
-                  Dashboard
+                  대시보드
                 </h1>
                 <p className="text-muted-foreground mt-1">
-                  Manage your projects and view your contributions
+                  프로젝트를 관리하고 내 기여도를 확인해보세요
                 </p>
               </div>
 
@@ -86,7 +86,7 @@ export default function MainPage() {
                       : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
-                  My Projects
+                  내 프로젝트
                 </button>
                 <button
                   onClick={() => setActiveTab('contributions')}
@@ -96,7 +96,7 @@ export default function MainPage() {
                       : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
-                  My Contribution Summary
+                  내 기여도 요약
                 </button>
               </div>
             </div>
@@ -116,7 +116,7 @@ export default function MainPage() {
           <Button asChild size="lg" className="gap-2 shadow-lg">
             <Link to="/projects/new">
               <Plus className="w-5 h-5" />
-              Create Project
+              프로젝트 생성
             </Link>
           </Button>
         </div>

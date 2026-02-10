@@ -11,6 +11,7 @@ import {
 import { MoreHorizontal, Users } from 'lucide-react';
 import type { Project, ProjectStatus } from '@/types';
 import { formatDate } from '../data';
+import { projectApi } from '@/api/project';
 
 interface MessageIconProps {
   className?: string;
@@ -35,11 +36,11 @@ const statusConfig: Record<
   { label: string; className: string }
 > = {
   in_progress: {
-    label: 'in_progress',
+    label: '진행 중',
     className: 'bg-accent text-accent-foreground hover:bg-accent',
   },
   completed: {
-    label: 'completed',
+    label: '완료',
     className: 'bg-success text-success-foreground hover:bg-success',
   },
 };
@@ -47,6 +48,17 @@ const statusConfig: Record<
 export default function ProjectCard({ project }: { project: Project }) {
   const status = statusConfig[project.status];
   const dateRange = `${formatDate(project.startDate)} — ${formatDate(project.endDate)}`;
+
+  async function handleDelete() {
+    const ok = window.confirm('정말 이 프로젝트를 삭제할까요?');
+    if (!ok) return;
+
+    try {
+      await projectApi.deleteProject(project.id);
+    } catch (err) {
+      alert('삭제에 실패했습니다.');
+    }
+  }
 
   return (
     <Link to={`/projects/${project.id}`} className="block group">
@@ -65,12 +77,19 @@ export default function ProjectCard({ project }: { project: Project }) {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem asChild>
-                <Link to={`/projects/${project.id}/edit`}>Edit project</Link>
+                <Link to={`/projects/${project.id}/edit`}>프로젝트 수정</Link>
               </DropdownMenuItem>
-              <DropdownMenuItem>Archive</DropdownMenuItem>
+              <DropdownMenuItem>보관</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-destructive">
-                Delete
+              <DropdownMenuItem
+                className="text-destructive"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleDelete();
+                }}
+              >
+                삭제
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -84,11 +103,11 @@ export default function ProjectCard({ project }: { project: Project }) {
         <div className="flex items-center gap-4 text-sm text-muted-foreground">
           <div className="flex items-center gap-1.5">
             <Users className="w-4 h-4" />
-            <span>{project.participantCount} members</span>
+            <span>{project.participantCount}명</span>
           </div>
           <div className="flex items-center gap-1.5">
             <MessageIcon className="w-4 h-4" />
-            <span>{project.testimonialCount} testimonials</span>
+            <span>{project.testimonialCount}개</span>
           </div>
         </div>
       </div>

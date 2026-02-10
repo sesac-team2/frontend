@@ -4,16 +4,44 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { ArrowLeft, Calendar } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import ProjectPreviewCard from '../components/ProjectPreviewCard';
+import { projectApi } from '@/api/project';
 
 export default function NewProjectPage() {
+  const navigate = useNavigate();
+
   const [projectName, setProjectName] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [description, setDescription] = useState('');
+  const [isCreating, setIsCreating] = useState(false);
 
   const canCreate = projectName.trim() && startDate && endDate;
+
+  const handleCreate = async () => {
+    if (!canCreate || isCreating) return;
+
+    setIsCreating(true);
+    try {
+      const body = {
+        name: projectName.trim(),
+        description: description.trim() ? description.trim() : undefined,
+        startDate,
+        endDate,
+      };
+
+      const createProject = await projectApi.createProject(body);
+
+      // 생성 성공 후 상세 페이지 이동
+      navigate(`/projects/${createProject.id}`);
+    } catch (e) {
+      alert('프로젝트 생성에 실패했습니다.');
+      console.error(e);
+    } finally {
+      setIsCreating(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -29,10 +57,10 @@ export default function NewProjectPage() {
             </Link>
             <div>
               <h1 className="font-semibold text-foreground">
-                Create New Project
+                새 프로젝트 생성
               </h1>
               <p className="text-sm text-muted-foreground">
-                Define your project context
+                프로젝트 기본 정보를 입력해주세요
               </p>
             </div>
           </div>
@@ -46,24 +74,24 @@ export default function NewProjectPage() {
             {/* Project name */}
             <div className="space-y-3">
               <Label htmlFor="projectName" className="text-base font-medium">
-                Project Name <span className="text-destructive">*</span>
+                프로젝트 이름 <span className="text-destructive">*</span>
               </Label>
               <Input
                 id="projectName"
-                placeholder="e.g., E-commerce Platform Redesign"
+                placeholder="예: 이커머스 플랫폼 리디자인"
                 value={projectName}
                 onChange={(e) => setProjectName(e.target.value)}
                 className="h-12 text-base"
               />
               <p className="text-sm text-muted-foreground">
-                Choose a clear, descriptive name that your team will recognize
+                팀원들이 쉽게 알아볼 수 있는 이름을 입력해주세요
               </p>
             </div>
 
             {/* Date range */}
             <div className="space-y-3">
               <Label className="text-base font-medium">
-                Project Duration <span className="text-destructive">*</span>
+                프로젝트 기간 <span className="text-destructive">*</span>
               </Label>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -71,7 +99,7 @@ export default function NewProjectPage() {
                     htmlFor="startDate"
                     className="text-sm text-muted-foreground"
                   >
-                    Start Date
+                    시작일
                   </Label>
                   <div className="relative">
                     <Input
@@ -89,7 +117,7 @@ export default function NewProjectPage() {
                     htmlFor="endDate"
                     className="text-sm text-muted-foreground"
                   >
-                    End Date
+                    종료일
                   </Label>
                   <div className="relative">
                     <Input
@@ -105,24 +133,24 @@ export default function NewProjectPage() {
                 </div>
               </div>
               <p className="text-sm text-muted-foreground">
-                You can update these dates later as the project evolves
+                프로젝트 진행 중에도 기간은 수정할 수 있습니다
               </p>
             </div>
 
             {/* Description */}
             <div className="space-y-3">
               <Label htmlFor="description" className="text-base font-medium">
-                Project Description
+                프로젝트 설명
               </Label>
               <Textarea
                 id="description"
-                placeholder="Briefly describe the project goals, scope, and what success looks like..."
+                placeholder="프로젝트 목표, 범위, 기대 결과를 간단히 작성해주세요..."
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 className="min-h-35 text-base resize-none"
               />
               <p className="text-sm text-muted-foreground">
-                Optional but helpful for teammates joining the project
+                선택 사항이지만 팀원들에게 도움이 됩니다
               </p>
             </div>
 
@@ -138,18 +166,15 @@ export default function NewProjectPage() {
           {/* Actions */}
           <div className="flex justify-end gap-3 mt-12 pt-8 border-t border-border">
             <Button variant="ghost" asChild>
-              <Link to="/projects">Cancel</Link>
+              <Link to="/projects">취소</Link>
             </Button>
+
             <Button
-              disabled={!canCreate}
-              asChild={!!canCreate}
+              disabled={!canCreate || isCreating}
+              onClick={handleCreate}
               className="min-w-40"
             >
-              {canCreate ? (
-                <Link to="/projects/1">Create Project</Link>
-              ) : (
-                'Create Project'
-              )}
+              {isCreating ? '생성 중...' : '프로젝트 생성'}
             </Button>
           </div>
         </div>

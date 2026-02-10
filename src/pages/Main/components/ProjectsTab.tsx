@@ -16,16 +16,15 @@ export default function ProjectsTab({ projects }: ProjectTabProps) {
           <FolderOpen className="w-8 h-8 text-muted-foreground" />
         </div>
         <h2 className="text-lg font-medium text-foreground mb-2">
-          No projects yet
+          아직 프로젝트가 없어요
         </h2>
         <p className="text-muted-foreground max-w-sm mb-6">
-          Create your first project to start collecting testimonials from your
-          team
+          첫 프로젝트를 생성해서 팀원들의 후기를 모아보세요
         </p>
         <Button asChild>
           <Link to="/projects/new">
             <Plus className="w-4 h-4 mr-2" />
-            Create Project
+            프로젝트 생성
           </Link>
         </Button>
       </div>
