@@ -28,7 +28,7 @@ export default function AuthCallback() {
 
           // Context 상태 업데이트
           login(data.token, data.user);
-          navigate('/projects');
+          window.location.href = '/projects';
         } else if (code && provider) {
           // 인증 코드가 온 경우 (Kakao, GitHub 등)
           console.log(`${provider} 인증 코드 발급:`, code);
@@ -36,7 +36,7 @@ export default function AuthCallback() {
 
           // Context 상태 업데이트
           login(data.token, data.user);
-          navigate('/projects');
+          window.location.href = '/projects';
         } else {
           console.error('인증 정보가 없습니다.');
           navigate('/login');

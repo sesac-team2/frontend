@@ -21,5 +21,22 @@ export default defineConfig({
     watch: {
       usePolling: true, // 파일 변경 감지를 더 확실하게 함
     },
+    proxy: {
+      '^/auth/(?!.*callback).*': {
+        target: 'http://54.236.227.121.nip.io:5002',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/projects': {
+        target: 'http://54.236.227.121.nip.io:5002',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/users': {
+        target: 'http://54.236.227.121.nip.io:5002',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
   },
 });
