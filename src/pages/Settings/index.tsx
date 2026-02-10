@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import { supabase } from '@/lib/supabase';
 
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -38,10 +39,40 @@ export default function SettingsPage() {
       await updateUser({
         fullName: name,
         bio: bio,
+        avatarUrl: profileImageUrl, // 이미지 URL도 함께 전송
       });
       setHasChanges(false);
     } catch (error) {
       console.error('Failed to update profile:', error);
+    }
+  };
+
+  const handleImageUpload = async (file: File) => {
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user?.id}-${Math.random()}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('profileImage')
+        .upload(filePath, file);
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      const { data } = supabase.storage
+        .from('profileImage')
+        .getPublicUrl(filePath);
+
+      if (data) {
+        setProfileImageUrl(data.publicUrl);
+        setHasChanges(true); // 변경 사항 있음으로 표시
+        console.log('Image uploaded successfully:', data.publicUrl);
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('이미지 업로드에 실패했습니다.');
     }
   };
 
@@ -78,7 +109,11 @@ export default function SettingsPage() {
       {/* Main content */}
       <main className="max-w-3xl mx-auto px-6 py-8">
         <div className="space-y-10">
-          <ProfileImageSection profileImageUrl={profileImageUrl} name={name} />
+          <ProfileImageSection
+            profileImageUrl={profileImageUrl}
+            name={name}
+            onImageUpload={handleImageUpload}
+          />
 
           <Separator />
 

@@ -36,7 +36,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           console.error('자동 로그인 실패:', error);
           // 토큰이 만료되었거나 유효하지 않으면 정리
           localStorage.removeItem('accessToken');
-          localStorage.removeItem('refreshToken');
           setUser(null);
         }
       }

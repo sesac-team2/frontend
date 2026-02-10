@@ -1,17 +1,20 @@
 import axios from 'axios';
 
 //test msw
-const baseURL = import.meta.env.DEV
-  ? '' // 예: /projects 로 요청 → MSW handlers의 rest.get('/projects')가 잡음
-  : 'http://54.236.227.121.nip.io:5002';
+// const baseURL = import.meta.env.DEV
+//   ? '' // 예: /projects 로 요청 → MSW handlers의 rest.get('/projects')가 잡음
+//   : 'http://54.236.227.121.nip.io:5002';
+
+const baseURL = '';
 
 // 1. 기본 설정이 적용된 인스턴스 생성
 const api = axios.create({
-  baseURL /* : 'http://54.236.227.121.nip.io:5002' */,
+  baseURL,
   timeout: 5000,
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true,
 });
 
 // [요청 인터셉터] 모든 요청 헤더에 Access Token 부착
@@ -29,24 +32,25 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      originalRequest.url !== '/auth/refresh'
+    ) {
       originalRequest._retry = true;
 
       try {
-        const refreshToken = localStorage.getItem('refreshToken');
+        // 1. 리프레시 토큰으로 새 액세스 토큰 요청 (쿠키 사용)
+        const res = await api.post(
+          '/auth/refresh',
+          {},
+          { withCredentials: true },
+        );
 
-        // 1. 리프레시 토큰으로 새 액세스 토큰 요청
-        const res = await api.post('/auth/refresh', {
-          refreshToken: refreshToken, // 바디에 담아 보내는 예시
-        });
-
-        const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
-          res.data;
+        const { accessToken: newAccessToken } = res.data;
 
         // 2. 새 토큰들을 저장
         localStorage.setItem('accessToken', newAccessToken);
-        if (newRefreshToken)
-          localStorage.setItem('refreshToken', newRefreshToken);
 
         // 3. 원래 실패했던 요청의 헤더를 새 토큰으로 교체 후 재시도
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
@@ -54,7 +58,9 @@ api.interceptors.response.use(
       } catch (refreshError) {
         // 리프레시 토큰도 만료되었거나 오류가 난 경우
         localStorage.clear();
-        window.location.href = '/login';
+        if (window.location.pathname !== '/login') {
+          window.location.href = '/login';
+        }
         return Promise.reject(refreshError);
       }
     }
