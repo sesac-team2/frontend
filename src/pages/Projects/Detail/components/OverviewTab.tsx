@@ -3,7 +3,7 @@ import type { ProjectDetail, ProjectMember } from '@/types';
 
 interface OverviewTabProps {
   project: ProjectDetail;
-  participants: ProjectMember[]; // ✅ members 그대로 받기
+  participants: ProjectMember[];
 }
 
 export default function OverviewTab({
@@ -14,17 +14,15 @@ export default function OverviewTab({
     <div className="mx-auto w-full max-w-5xl space-y-6">
       {/* Description */}
       <div className="p-6 rounded-xl border border-border bg-card">
-        <h3 className="font-semibold text-foreground mb-3">
-          About this project
-        </h3>
+        <h3 className="font-semibold text-foreground mb-3">프로젝트 소개</h3>
         <p className="text-muted-foreground leading-relaxed">
-          {project.description}
+          {project.description || '프로젝트 설명이 아직 없습니다.'}
         </p>
       </div>
 
       {/* Recent activity (임시 UI) */}
       <div className="p-6 rounded-xl border border-border bg-card">
-        <h3 className="font-semibold text-foreground mb-4">Recent Activity</h3>
+        <h3 className="font-semibold text-foreground mb-4">최근 활동</h3>
 
         <div className="space-y-4">
           {participants.slice(0, 3).map((member) => (
@@ -52,11 +50,10 @@ export default function OverviewTab({
                     {member.fullName}
                   </span>
                   <span className="text-muted-foreground">
-                    {' '}
-                    wrote a testimonial
+                    님이 후기를 작성했습니다
                   </span>
                 </p>
-                <p className="text-xs text-muted-foreground mt-0.5">Recently</p>
+                <p className="text-xs text-muted-foreground mt-0.5">최근</p>
               </div>
             </div>
           ))}
@@ -64,7 +61,9 @@ export default function OverviewTab({
 
         {/* 참가자가 0명일 때 */}
         {participants.length === 0 && (
-          <p className="text-sm text-muted-foreground">No recent activity.</p>
+          <p className="text-sm text-muted-foreground">
+            아직 활동 내역이 없습니다.
+          </p>
         )}
       </div>
     </div>

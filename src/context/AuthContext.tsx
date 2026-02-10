@@ -30,7 +30,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         try {
           // 토큰이 있으면 내 정보 요청
           const userData = await authApi.getMe();
-          console.log(userData);
           setUser(userData);
         } catch (error) {
           console.error('자동 로그인 실패:', error);

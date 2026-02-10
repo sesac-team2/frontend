@@ -41,11 +41,11 @@ export default function ContributionSummaryTab({
       <div className="flex items-center justify-end gap-3 mb-6">
         <Button variant="outline" className="gap-2 bg-transparent">
           <ImageIcon className="w-4 h-4" />
-          Generate Image
+          이미지 생성
         </Button>
         <Button variant="outline" className="gap-2 bg-transparent">
           <Download className="w-4 h-4" />
-          Export
+          내보내기
         </Button>
       </div>
 
@@ -57,7 +57,7 @@ export default function ContributionSummaryTab({
         <div className="lg:col-span-2">
           <div className="flex items-center gap-2 pb-4 border-b border-border overflow-x-auto">
             <span className="text-sm text-muted-foreground shrink-0">
-              Filter by project:
+              프로젝트 필터:
             </span>
 
             <Button
@@ -65,7 +65,7 @@ export default function ContributionSummaryTab({
               size="sm"
               onClick={() => setSelectedProject(null)}
             >
-              All
+              전체
             </Button>
 
             {projectNames.map((name) => (
@@ -86,8 +86,8 @@ export default function ContributionSummaryTab({
         <div className="hidden lg:block">
           <div className="pb-4 border-b border-border invisible pointer-events-none">
             {/* 같은 높이를 만들기 위해 동일한 구조/사이즈를 유지 */}
-            <span className="text-sm shrink-0">Filter by project:</span>
-            <Button size="sm">All</Button>
+            <span className="text-sm shrink-0">프로젝트 필터:</span>
+            <Button size="sm">전체</Button>
           </div>
         </div>
 
@@ -105,27 +105,25 @@ export default function ContributionSummaryTab({
            ========================= */}
         <div className="space-y-6">
           <div className="p-6 rounded-xl border border-border bg-card">
-            <h3 className="font-semibold text-foreground mb-4">Overview</h3>
+            <h3 className="font-semibold text-foreground mb-4">요약</h3>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <p className="text-3xl font-bold text-foreground">
                   {testimonials.length}
                 </p>
-                <p className="text-sm text-muted-foreground">
-                  Testimonials written
-                </p>
+                <p className="text-sm text-muted-foreground">작성한 후기</p>
               </div>
               <div>
                 <p className="text-3xl font-bold text-foreground">
                   {projectNames.length}
                 </p>
-                <p className="text-sm text-muted-foreground">Projects</p>
+                <p className="text-sm text-muted-foreground">프로젝트</p>
               </div>
             </div>
           </div>
 
           <div className="p-6 rounded-xl border border-border bg-card">
-            <h3 className="font-semibold text-foreground mb-4">Top Keywords</h3>
+            <h3 className="font-semibold text-foreground mb-4">상위 키워드</h3>
             <div className="flex flex-wrap gap-2">
               {sortedKeywords.slice(0, 12).map(({ keyword, count }) => (
                 <Badge

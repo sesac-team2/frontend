@@ -18,8 +18,8 @@ type ProjectContextType = {
   refreshProjects: () => Promise<void>; // 의미만 다르게 둠(같이 동작)
 
   // 삭제/수정 대비 유틸 (선택)
-  removeProject: (id: string) => void;
-  upsertProject: (project: Project) => void;
+  // removeProject: (id: string) => void;
+  // upsertProject: (project: Project) => void;
 };
 
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
@@ -35,7 +35,6 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
 
     try {
       const projectData = await projectApi.getProjects();
-      console.log(projectData);
       setProjects(projectData.data);
     } catch (e: any) {
       setError(e?.message ?? '프로젝트 목록을 불러오지 못했어요.');
@@ -52,19 +51,19 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
     fetchProjects();
   }, []);
 
-  const removeProject = (id: string) => {
-    setProjects((prev) => prev.filter((p) => p.id !== id));
-  };
+  // const removeProject = (id: string) => {
+  //   setProjects((prev) => prev.filter((p) => p.id !== id));
+  // };
 
-  const upsertProject = (project: Project) => {
-    setProjects((prev) => {
-      const idx = prev.findIndex((p) => p.id === project.id);
-      if (idx === -1) return [project, ...prev];
-      const copy = [...prev];
-      copy[idx] = project;
-      return copy;
-    });
-  };
+  // const upsertProject = (project: Project) => {
+  //   setProjects((prev) => {
+  //     const idx = prev.findIndex((p) => p.id === project.id);
+  //     if (idx === -1) return [project, ...prev];
+  //     const copy = [...prev];
+  //     copy[idx] = project;
+  //     return copy;
+  //   });
+  // };
 
   const value = useMemo(
     () => ({
@@ -73,8 +72,8 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
       error,
       fetchProjects,
       refreshProjects,
-      removeProject,
-      upsertProject,
+      // removeProject,
+      // upsertProject,
     }),
     [projects, isLoading, error],
   );
