@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -27,7 +26,7 @@ export default function LeaveProjectModal({
 
   const handleLeave = () => {
     setIsLeaving(true);
-    // Simulate leave action
+    // 실제로는 여기서 프로젝트 나가기 API 호출
     setTimeout(() => {
       setIsLeaving(false);
       navigate('/projects');
@@ -42,32 +41,34 @@ export default function LeaveProjectModal({
           className="gap-2 bg-transparent text-muted-foreground hover:text-destructive hover:border-destructive"
         >
           <LogOut className="w-4 h-4" />
-          Leave
+          프로젝트 나가기
         </Button>
       </AlertDialogTrigger>
+
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Leave Project</AlertDialogTitle>
+          <AlertDialogTitle>프로젝트 나가기</AlertDialogTitle>
           <AlertDialogDescription className="space-y-2">
             <span className="block">
-              Are you sure you want to leave{' '}
-              <span className="font-medium text-foreground">{projectName}</span>
-              ?
+              정말로{' '}
+              <span className="font-medium text-foreground">{projectName}</span>{' '}
+              프로젝트에서 나가시겠어요?
             </span>
             <span className="block">
-              You will lose access to this project and all your testimonials
-              will remain visible to other participants.
+              프로젝트에서 나가면 더 이상 접근할 수 없으며, 작성한 후기는 다른
+              참여자에게 계속 표시됩니다.
             </span>
           </AlertDialogDescription>
         </AlertDialogHeader>
+
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel>취소</AlertDialogCancel>
           <AlertDialogAction
             onClick={handleLeave}
             disabled={isLeaving}
             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
           >
-            {isLeaving ? 'Leaving...' : 'Leave Project'}
+            {isLeaving ? '나가는 중...' : '프로젝트 나가기'}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
