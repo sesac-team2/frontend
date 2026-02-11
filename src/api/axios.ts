@@ -29,13 +29,13 @@ api.interceptors.response.use(
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
-      originalRequest.url !== '/auth/refresh'
+      originalRequest.url !== '/api/auth/refresh'
     ) {
       originalRequest._retry = true;
 
       try {
         // 1. 리프레시 토큰으로 새 액세스 토큰 요청 (쿠키 사용)
-        const res = await api.post('/auth/refresh', {});
+        const res = await api.post('/api/auth/refresh', {});
 
         const { accessToken: newAccessToken } = res.data;
 

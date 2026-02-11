@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowLeft, Calendar } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import ProjectPreviewCard from '../components/ProjectPreviewCard';
 import { projectApi } from '@/api/project';
@@ -32,7 +32,7 @@ export default function NewProjectPage() {
       };
 
       const createProject = await projectApi.createProject(body);
-
+      console.log(createProject);
       // 생성 성공 후 상세 페이지 이동
       navigate(`/projects/${createProject.id}`);
     } catch (e) {
@@ -107,9 +107,8 @@ export default function NewProjectPage() {
                       type="date"
                       value={startDate}
                       onChange={(e) => setStartDate(e.target.value)}
-                      className="h-11 pr-10"
+                      className="h-11 pr-3"
                     />
-                    <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
                   </div>
                 </div>
                 <div className="space-y-2">
@@ -126,9 +125,8 @@ export default function NewProjectPage() {
                       value={endDate}
                       onChange={(e) => setEndDate(e.target.value)}
                       min={startDate}
-                      className="h-11 pr-10"
+                      className="h-11 pr-3"
                     />
-                    <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
                   </div>
                 </div>
               </div>
