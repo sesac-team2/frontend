@@ -35,11 +35,7 @@ api.interceptors.response.use(
 
       try {
         // 1. 리프레시 토큰으로 새 액세스 토큰 요청 (쿠키 사용)
-        const res = await api.post(
-          '/auth/refresh',
-          {},
-          { withCredentials: true },
-        );
+        const res = await api.post('/auth/refresh', {});
 
         const { accessToken: newAccessToken } = res.data;
 

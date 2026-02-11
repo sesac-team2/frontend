@@ -21,8 +21,10 @@ function App() {
         <Route element={<PublicRoute />}>
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/auth/:provider/callback" element={<AuthCallback />} />
         </Route>
+
+        {/* 로그인 콜백 (PublicRoute 아님 - 상태 변경이 일어나므로 독립적으로 처리) */}
+        <Route path="/auth/:provider/callback" element={<AuthCallback />} />
 
         {/* 로그인 한 사람만 갈 수 있는 곳 */}
         <Route element={<RequireAuth />}>

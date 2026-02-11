@@ -25,6 +25,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // 1. 앱 실행(새로고침) 시 토큰 체크 및 유저 정보 복구
   useEffect(() => {
     const initAuth = async () => {
+      // 콜백 페이지(로그인 처리 중)에서는 기존 토큰 검사를 건너뛰어 불필요한 401 에러 방지
+      if (window.location.pathname.includes('/callback')) {
+        setIsLoading(false);
+        return;
+      }
+
       const token = localStorage.getItem('accessToken');
       if (token) {
         try {
@@ -49,9 +55,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(newUser);
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await authApi.logout();
     localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
     setUser(null);
     window.location.href = '/login';
   };
