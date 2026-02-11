@@ -9,13 +9,11 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { UserPlus, Copy, Check, Mail } from 'lucide-react';
+import { UserPlus, Copy, Check } from 'lucide-react';
 import type { ReactNode } from 'react';
 
 type InviteModalProps = {
-  trigger?: ReactNode; // ✅ 추가
+  trigger?: ReactNode;
 };
 
 export default function InviteModal({ trigger }: InviteModalProps) {
@@ -31,20 +29,20 @@ export default function InviteModal({ trigger }: InviteModalProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        {/* ✅ trigger 없으면 기존 버튼 그대로 */}
+        {/* trigger 없으면 기본 버튼 */}
         {trigger ?? (
           <Button variant="outline" className="w-full gap-2 bg-transparent">
             <UserPlus className="w-4 h-4" />
-            Invite Participants
+            참여자 초대
           </Button>
         )}
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Invite Participants</DialogTitle>
+          <DialogTitle>참여자 초대</DialogTitle>
           <DialogDescription>
-            Share this link with team members to invite them to the project
+            아래 링크를 팀원에게 공유하여 프로젝트에 초대하세요
           </DialogDescription>
         </DialogHeader>
 
@@ -52,8 +50,9 @@ export default function InviteModal({ trigger }: InviteModalProps) {
           {/* Invite link */}
           <div className="space-y-3">
             <label className="text-sm font-medium text-foreground">
-              Invite Link
+              초대 링크
             </label>
+
             <div className="flex gap-2">
               <Input
                 value={inviteLink}
@@ -68,8 +67,9 @@ export default function InviteModal({ trigger }: InviteModalProps) {
                 )}
               </Button>
             </div>
+
             <p className="text-xs text-muted-foreground">
-              This link will expire in 7 days
+              이 링크는 7일 후 만료됩니다
             </p>
           </div>
         </div>

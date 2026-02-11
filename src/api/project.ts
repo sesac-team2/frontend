@@ -24,46 +24,56 @@ export interface ProjectDetailResponse {
   members: ProjectMember[];
 }
 
+export type CreateProjectRequestBody = {
+  name: string;
+  description?: string;
+  startDate: string; // YYYY-MM-DD
+  endDate: string; // YYYY-MM-DD
+};
+
+export type EditProjectRequestBody = {
+  name: string;
+  description?: string;
+  status: string;
+  endDate: string;
+};
+
 export const projectApi = {
-  //Success Response (201 Created): 생성된 프로젝트 객체를 반환합니다(목록 프로젝트와 동일한 구조).
-  createProject: async () => {
-    const response = await api.post<ProjectResponse>(`/projects`, {
-      name,
-      description,
-      startDate,
-      endDate,
+  createProject: async (body: CreateProjectRequestBody) => {
+    const response = await api.post<Project>(`/projects`, {
+      name: body.name,
+      description: body.description, //optional
+      startDate: body.startDate,
+      endDate: body.endDate,
     });
     return response.data;
   },
 
-  // Success Response (200 OK)**: 프로젝트 업데이트 완료
-  // Error Responses**: 403 Forbidden: 유저가 관리자가 아닐때
-  modifyProject: async (id: string) => {
+  editProject: async (id: string, body: EditProjectRequestBody) => {
     //관리자만 수정?
     //myRole == admin
-    const response = await api.put(`/projects/${id}`, {
-      name,
-      status,
-      description,
-      endDate,
+    //모든 필드는 Optional 이지만 최소 하나 이상은 required
+    const response = await api.put<Project>(`/projects/${id}`, {
+      name: body.name,
+      status: body.status,
+      description: body.description,
+      endDate: body.endDate,
     });
     return response.data;
   },
 
   deleteProject: async (id: string) => {
-    const response = await api.delete(`/projects/${id}`);
+    const response = await api.delete<Project>(`/projects/${id}`);
     return response.data;
   },
 
   getProjects: async () => {
     const response = await api.get<ProjectResponse>('/projects');
-    console.log(response.data);
     return response.data;
   },
 
   getProjectDetail: async (id: string) => {
     const response = await api.get<ProjectDetailResponse>(`/projects/${id}`);
-    console.log(response.data);
     return response.data;
   },
 };

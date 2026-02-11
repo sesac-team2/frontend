@@ -10,7 +10,7 @@ import ParticipantsTab from './components/ParticipantsTab';
 import { formatDate } from '../utils';
 import ProovIcon from '@/assets/proov.svg';
 
-import type { ProjectStatus, ProjectDetail } from '@/types';
+import type { ProjectStatus, ProjectDetail } from '@/types/project';
 import { useAuth } from '@/context/AuthContext';
 import { projectApi } from '@/api/project';
 
@@ -19,11 +19,11 @@ const statusConfig: Record<
   { label: string; className: string }
 > = {
   in_progress: {
-    label: 'In Progress',
+    label: '진행 중',
     className: 'bg-accent text-accent-foreground',
   },
   completed: {
-    label: 'Completed',
+    label: '완료',
     className: 'bg-success text-success-foreground',
   },
 };
@@ -51,10 +51,9 @@ export default function ProjectDetailPage() {
 
       try {
         const detail = await projectApi.getProjectDetail(id);
-        console.log(detail);
         setProjectDetail(detail);
       } catch (e: any) {
-        setError(e?.message ?? '프로젝트 상세를 불러오지 못했어요.');
+        setError(e?.message ?? '프로젝트 상세 정보를 불러오지 못했어요.');
         setProjectDetail(null);
       } finally {
         setIsLoading(false);
@@ -77,7 +76,7 @@ export default function ProjectDetailPage() {
     return (
       <div className="min-h-screen bg-background">
         <main className="max-w-5xl mx-auto px-6 py-8">
-          <div className="text-sm text-muted-foreground">Loading...</div>
+          <div className="text-sm text-muted-foreground">로딩 중...</div>
         </main>
       </div>
     );
@@ -90,7 +89,7 @@ export default function ProjectDetailPage() {
           <div className="text-sm text-red-500">{error}</div>
           <div className="mt-4">
             <Button asChild variant="outline">
-              <Link to="/projects">Back</Link>
+              <Link to="/projects">뒤로가기</Link>
             </Button>
           </div>
         </main>
@@ -173,12 +172,12 @@ export default function ProjectDetailPage() {
                 {activeTab === 'overview' ? (
                   <div className="flex items-center gap-1.5">
                     <FileText className="w-4 h-4" />
-                    {`${testimonialCount} testimonials`}
+                    {`${testimonialCount}개 후기`}
                   </div>
                 ) : (
                   <div className="flex items-center gap-1.5">
                     <Users className="w-4 h-4" />
-                    {`${participantCount} participants`}
+                    {`${participantCount}명 참여자`}
                   </div>
                 )}
               </div>
@@ -192,7 +191,7 @@ export default function ProjectDetailPage() {
               >
                 <Link to={`/projects/${projectDetail.id}/edit`}>
                   <Pencil className="w-4 h-4" />
-                  Edit
+                  수정
                 </Link>
               </Button>
               <LeaveProjectModal projectName={projectDetail.name} />
@@ -208,7 +207,7 @@ export default function ProjectDetailPage() {
                   : 'border-transparent text-muted-foreground hover:text-foreground'
               }`}
             >
-              Overview
+              개요
             </button>
             <button
               onClick={() => setActiveTab('participants')}
@@ -218,7 +217,7 @@ export default function ProjectDetailPage() {
                   : 'border-transparent text-muted-foreground hover:text-foreground'
               }`}
             >
-              Participants
+              참여자
             </button>
           </div>
         </div>

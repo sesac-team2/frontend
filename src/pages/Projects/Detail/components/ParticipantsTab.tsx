@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { PenLine, UserPlus } from 'lucide-react';
 import InviteModal from './InviteModal';
-import type { ProjectMember } from '@/types';
+import type { ProjectMember } from '@/types/project';
 
 interface ParticipantsTabProps {
   participants: ProjectMember[];
@@ -24,7 +24,7 @@ export default function ParticipantsTab({
               className="gap-2 bg-transparent"
             >
               <UserPlus className="w-4 h-4" />
-              Invite Participants
+              참여자 초대
             </Button>
           }
         />
@@ -35,16 +35,16 @@ export default function ParticipantsTab({
           <thead className="bg-muted/50">
             <tr>
               <th className="text-left text-sm font-medium text-muted-foreground px-4 py-3">
-                Name
+                이름
               </th>
               <th className="text-left text-sm font-medium text-muted-foreground px-4 py-3">
-                Role
+                역할
               </th>
               <th className="text-left text-sm font-medium text-muted-foreground px-4 py-3">
-                Testimonial
+                후기
               </th>
               <th className="text-right text-sm font-medium text-muted-foreground px-4 py-3">
-                Actions
+                작업
               </th>
             </tr>
           </thead>
@@ -96,7 +96,7 @@ export default function ParticipantsTab({
                   <Button variant="ghost" size="sm" asChild>
                     <Link to={`/testimonials/new?participant=${member.userId}`}>
                       <PenLine className="w-4 h-4 mr-1" />
-                      Write
+                      작성하기
                     </Link>
                   </Button>
                 </td>
@@ -109,7 +109,7 @@ export default function ParticipantsTab({
                   colSpan={4}
                   className="px-4 py-10 text-center text-sm text-muted-foreground"
                 >
-                  No participants yet.
+                  아직 참여자가 없습니다.
                 </td>
               </tr>
             )}
