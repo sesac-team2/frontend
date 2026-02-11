@@ -35,9 +35,6 @@ export const authApi = {
     return response.data;
   },
 
-  /**
-   * (추가) 현재 저장된 토큰으로 내 정보 가져오기 (새로고침 시 자동 로그인 용)
-   */
   getMe: async (): Promise<User> => {
     const response = await api.get<User>('/auth/me');
     return response.data;
@@ -51,6 +48,10 @@ export const authApi = {
     const response = await api.put<User>('/auth/me', data);
     console.log(response.data);
     return response.data;
+  },
+
+  logout: async (): Promise<void> => {
+    await api.post('/auth/logout', {}, { withCredentials: true });
   },
 
   deleteAccount: async (): Promise<void> => {

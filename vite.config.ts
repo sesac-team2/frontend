@@ -27,12 +27,7 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       },
-      '/projects': {
-        target: 'http://54.236.227.121.nip.io:5002',
-        changeOrigin: true,
-        secure: false,
-      },
-      '/users': {
+      '/projects/*': {
         target: 'http://54.236.227.121.nip.io:5002',
         changeOrigin: true,
         secure: false,

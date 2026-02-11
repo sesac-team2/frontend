@@ -1,5 +1,5 @@
 // src/pages/Login/AuthCallback.tsx (새로 생성)
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { authApi } from '@/api/auth';
 import { useAuth } from '@/context/AuthContext';
@@ -9,9 +9,13 @@ export default function AuthCallback() {
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAuth();
+  const processed = useRef(false);
 
   useEffect(() => {
     const handleAuth = async () => {
+      if (processed.current) return;
+      processed.current = true;
+
       // 1. 구글 같은 Implicit Flow 처리 (URL Hash # 에 데이터가 있는 경우)
       const hashParams = new URLSearchParams(window.location.hash.substring(1));
       const accessToken = hashParams.get('access_token');
@@ -26,9 +30,8 @@ export default function AuthCallback() {
           console.log(`${provider} 로그인 성공 (Token):`, accessToken);
           const data = await authApi.loginWithToken(provider, accessToken);
 
-          // Context 상태 업데이트
           login(data.token, data.user);
-          window.location.href = '/projects';
+          navigate('/projects', { replace: true });
         } else if (code && provider) {
           // 인증 코드가 온 경우 (Kakao, GitHub 등)
           console.log(`${provider} 인증 코드 발급:`, code);
@@ -36,7 +39,7 @@ export default function AuthCallback() {
 
           // Context 상태 업데이트
           login(data.token, data.user);
-          window.location.href = '/projects';
+          navigate('/projects', { replace: true });
         } else {
           console.error('인증 정보가 없습니다.');
           navigate('/login');
