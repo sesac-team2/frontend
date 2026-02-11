@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import { projectApi } from '@/api/project';
 import type { Project } from '@/types';
+import { useAuth } from '@/context/AuthContext';
 
 type ProjectContextType = {
   projects: Project[];
@@ -47,9 +48,13 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
   const refreshProjects = fetchProjects;
 
   // 앱 진입 시 1번 로딩
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
+
   useEffect(() => {
+    if (authLoading) return;
+    if (!isAuthenticated) return;
     fetchProjects();
-  }, []);
+  }, [authLoading, isAuthenticated]);
 
   // const removeProject = (id: string) => {
   //   setProjects((prev) => prev.filter((p) => p.id !== id));
