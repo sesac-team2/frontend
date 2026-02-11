@@ -20,9 +20,10 @@ export default function MainPage() {
 
   const { projects, isLoading } = useProjects();
 
-  // ✅ “데이터 아직 안 왔는데 빈 상태 UI만 보이는 문제” 방지
+  const safeProjects = projects ?? [];
+
   const showEmptyProjectsOnly =
-    activeTab === 'projects' && !isLoading && projects.length === 0;
+    activeTab === 'projects' && !isLoading && safeProjects.length === 0;
 
   return (
     <div className="min-h-screen bg-background">
@@ -62,7 +63,7 @@ export default function MainPage() {
         {isLoading ? (
           <div className="text-sm text-muted-foreground">로딩 중...</div>
         ) : showEmptyProjectsOnly ? (
-          <ProjectsTab projects={projects} />
+          <ProjectsTab projects={safeProjects} />
         ) : (
           <>
             {/* Page header */}
@@ -102,7 +103,7 @@ export default function MainPage() {
             </div>
 
             {activeTab === 'projects' ? (
-              <ProjectsTab projects={projects} />
+              <ProjectsTab projects={safeProjects} />
             ) : (
               <ContributionSummaryTab testimonials={mockTestimonials} />
             )}
@@ -111,7 +112,7 @@ export default function MainPage() {
       </main>
 
       {/* Fixed create button - only show on projects tab */}
-      {activeTab === 'projects' && !isLoading && projects.length > 0 && (
+      {activeTab === 'projects' && !isLoading && safeProjects.length > 0 && (
         <div className="fixed bottom-8 right-8">
           <Button asChild size="lg" className="gap-2 shadow-lg">
             <Link to="/projects/new">

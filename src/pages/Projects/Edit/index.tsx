@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { ArrowLeft, Calendar } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useProjects } from '@/context/ProjectContext';
 import { projectApi } from '@/api/project';
@@ -199,9 +199,8 @@ export default function EditProjectPage() {
                       type="date"
                       value={startDate}
                       onChange={(e) => setStartDate(e.target.value)}
-                      className="h-11 pr-10"
+                      className="h-11 pr-3"
                     />
-                    <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
                   </div>
                 </div>
                 <div className="space-y-2">
@@ -218,9 +217,8 @@ export default function EditProjectPage() {
                       value={endDate}
                       onChange={(e) => setEndDate(e.target.value)}
                       min={startDate || undefined}
-                      className="h-11 pr-10"
+                      className="h-11 pr-3"
                     />
-                    <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
                   </div>
                 </div>
               </div>

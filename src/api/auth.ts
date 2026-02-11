@@ -14,7 +14,7 @@ export const authApi = {
     provider: string,
     token: string,
   ): Promise<SocialLoginResponse> => {
-    const response = await api.post<SocialLoginResponse>(`/auth/login`, {
+    const response = await api.post<SocialLoginResponse>(`/api/auth/login`, {
       provider,
       token,
     });
@@ -26,7 +26,7 @@ export const authApi = {
    * 카카오, 깃허브 등 Authorization Code로 받은 Code를 백엔드에 전달
    */
   loginWithCode: async (provider: string, code: string) => {
-    const response = await api.post<SocialLoginResponse>(`/auth/login`, {
+    const response = await api.post<SocialLoginResponse>(`/api/auth/login`, {
       provider,
       code,
       redirectUri: `http://localhost:5173/auth/${provider}/callback`,
@@ -36,7 +36,7 @@ export const authApi = {
   },
 
   getMe: async (): Promise<User> => {
-    const response = await api.get<User>('/auth/me');
+    const response = await api.get<User>('/api/auth/me');
     return response.data;
   },
 
@@ -45,16 +45,16 @@ export const authApi = {
     bio?: string;
     avatarUrl?: string;
   }): Promise<User> => {
-    const response = await api.put<User>('/auth/me', data);
+    const response = await api.put<User>('/api/auth/me', data);
     console.log(response.data);
     return response.data;
   },
 
   logout: async (): Promise<void> => {
-    await api.post('/auth/logout', {}, { withCredentials: true });
+    await api.post('/api/auth/logout', {}, { withCredentials: true });
   },
 
   deleteAccount: async (): Promise<void> => {
-    await api.delete('/auth/me');
+    await api.delete('/api/auth/me');
   },
 };
