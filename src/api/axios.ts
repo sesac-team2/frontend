@@ -14,7 +14,6 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: true,
 });
 
 // [요청 인터셉터] 모든 요청 헤더에 Access Token 부착
