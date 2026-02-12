@@ -227,6 +227,7 @@ export default function ProjectDetailPage() {
         ) : (
           // ✅ Invite 성공하면 refetchDetail() 실행 → 참여자 목록 즉시 갱신
           <ParticipantsTab
+            projectId={projectDetail.id}
             participants={participants}
             onInvited={refetchDetail}
           />
