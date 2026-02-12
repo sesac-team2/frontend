@@ -51,6 +51,7 @@ export default function ProjectDetailPage() {
 
       try {
         const detail = await projectApi.getProjectDetail(id);
+        console.log(detail);
         setProjectDetail(detail);
       } catch (e: any) {
         setError(e?.message ?? '프로젝트 상세 정보를 불러오지 못했어요.');
