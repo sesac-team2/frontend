@@ -7,8 +7,10 @@ import { ArrowLeft } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import ProjectPreviewCard from '../components/ProjectPreviewCard';
 import { projectApi } from '@/api/project';
+import { useProjects } from '@/context/ProjectContext';
 
 export default function NewProjectPage() {
+  const { refreshProjects } = useProjects();
   const navigate = useNavigate();
 
   const [projectName, setProjectName] = useState('');
@@ -32,8 +34,7 @@ export default function NewProjectPage() {
       };
 
       const createProject = await projectApi.createProject(body);
-      console.log(createProject);
-      // 생성 성공 후 상세 페이지 이동
+      await refreshProjects();
       navigate(`/projects/${createProject.id}`);
     } catch (e) {
       alert('프로젝트 생성에 실패했습니다.');

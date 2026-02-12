@@ -12,6 +12,7 @@ import { MoreHorizontal, Users } from 'lucide-react';
 import type { Project, ProjectStatus } from '@/types';
 import { formatDate } from '../data';
 import { projectApi } from '@/api/project';
+import { useProjects } from '@/context/ProjectContext';
 
 interface MessageIconProps {
   className?: string;
@@ -48,6 +49,7 @@ const statusConfig: Record<
 export default function ProjectCard({ project }: { project: Project }) {
   const status = statusConfig[project.status];
   const dateRange = `${formatDate(project.startDate)} — ${formatDate(project.endDate)}`;
+  const { refreshProjects } = useProjects();
 
   async function handleDelete() {
     const ok = window.confirm('정말 이 프로젝트를 삭제할까요?');
@@ -55,6 +57,7 @@ export default function ProjectCard({ project }: { project: Project }) {
 
     try {
       await projectApi.deleteProject(project.id);
+      await refreshProjects();
     } catch (err) {
       alert('삭제에 실패했습니다.');
     }
@@ -79,7 +82,6 @@ export default function ProjectCard({ project }: { project: Project }) {
               <DropdownMenuItem asChild>
                 <Link to={`/projects/${project.id}/edit`}>프로젝트 수정</Link>
               </DropdownMenuItem>
-              <DropdownMenuItem>보관</DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 className="text-destructive"
