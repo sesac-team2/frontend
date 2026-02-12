@@ -10,6 +10,8 @@ import ProovIcon from '@/assets/proov.svg';
 import { useProjects } from '@/context/ProjectContext';
 import { useAuth } from '@/context/AuthContext';
 
+import MainSkeleton from './components/MainSkeleton';
+
 export default function MainPage() {
   const [activeTab, setActiveTab] = useState<'projects' | 'contributions'>(
     'projects',
@@ -24,6 +26,10 @@ export default function MainPage() {
 
   const showEmptyProjectsOnly =
     activeTab === 'projects' && !isLoading && safeProjects.length === 0;
+
+  if (isLoading) {
+    return <MainSkeleton />;
+  }
 
   return (
     <div className="min-h-screen bg-background">

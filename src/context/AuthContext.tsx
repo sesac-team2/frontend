@@ -55,11 +55,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(newUser);
   };
 
-  const logout = async () => {
-    await authApi.logout();
+  const logout = () => {
     localStorage.removeItem('accessToken');
     setUser(null);
-    window.location.href = '/login';
+    // 백엔드 로그아웃 요청은 비동기로 처리 (사용자 경험 우선)
+    authApi.logout().catch((err) => console.error('Logout API failed:', err));
   };
 
   const updateUser = async (data: {
