@@ -1,17 +1,13 @@
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
+import MainSkeleton from '@/pages/Main/components/MainSkeleton';
 
 export default function RequireAuth() {
   const { isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
-    // 아직 토큰 확인 중이면 로딩 표시 (깜빡임 방지)
-    // TODO: 예쁜 로딩 스피너로 교체 가능
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        Loading...
-      </div>
-    );
+    // 아직 토큰 확인 중이면 로딩 표시 (MainSkeleton으로 자연스럽게)
+    return <MainSkeleton />;
   }
 
   if (!isAuthenticated) {

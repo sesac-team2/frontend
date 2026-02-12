@@ -12,6 +12,8 @@ import NameSection from './components/NameSection';
 import BioSection from './components/BioSection';
 import AccountActionsSection from './components/AccountActionsSection';
 
+import SettingsSkeleton from './components/SettingsSkeleton';
+
 export default function SettingsPage() {
   const [name, setName] = useState('');
   const [bio, setBio] = useState('');
@@ -19,16 +21,19 @@ export default function SettingsPage() {
   const [hasChanges, setHasChanges] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  const { user, updateUser } = useAuth();
+  const { user, updateUser, isLoading } = useAuth();
 
   useEffect(() => {
     if (user) {
       setName(user.fullName || '');
       setBio(user.bio || '');
       setProfileImageUrl(user.avatarUrl || '');
-      console.log(user);
     }
   }, [user]);
+
+  if (isLoading) {
+    return <SettingsSkeleton />;
+  }
 
   const handleChange = <T,>(setter: (value: T) => void, value: T) => {
     setter(value);

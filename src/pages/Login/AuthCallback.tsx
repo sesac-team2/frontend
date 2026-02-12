@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { authApi } from '@/api/auth';
 import { useAuth } from '@/context/AuthContext';
+import MainSkeleton from '../Main/components/MainSkeleton';
 
 export default function AuthCallback() {
   const { provider } = useParams<{ provider: string }>(); // google, kakao, github 등
@@ -54,9 +55,5 @@ export default function AuthCallback() {
     handleAuth();
   }, [provider, navigate, location, login]);
 
-  return (
-    <div className="flex items-center justify-center min-h-screen">
-      <p>{provider} 로그인 처리 중...</p>
-    </div>
-  );
+  return <MainSkeleton />;
 }
