@@ -86,7 +86,7 @@ export const landingPageLinks: LandingPageLinkItem[] = [
     description: 'Core testimonial creation',
   },
   {
-    href: '/share/sarah-chen',
+    href: '/share/example',
     label: 'Public Share Page',
     description: 'External sharing page',
   },

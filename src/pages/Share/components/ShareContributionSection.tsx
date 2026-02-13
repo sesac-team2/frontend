@@ -1,26 +1,29 @@
-import type { ContributionHighlight } from '../models';
 import ContributionCard from './ContributionCard';
+import type { PortfolioProject } from '@/types/portfolio';
 
 interface ShareContributionSectionProps {
-  title?: string;
-  contributions: ContributionHighlight[];
+  projects: PortfolioProject[];
 }
 
 export default function ShareContributionSection({
-  title = '기여 하이라이트',
-  contributions,
+  projects,
 }: ShareContributionSectionProps) {
   return (
     <div className="space-y-6">
       <h2 className="text-xl font-semibold text-foreground text-center mb-8">
-        {title}
+        프로젝트
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {contributions.map((contribution) => (
+        {projects.map((project) => (
           <ContributionCard
-            key={`${contribution.project}-${contribution.duration}`}
-            contribution={contribution}
+            key={`${project.id}-${project.date}`}
+            contribution={{
+              project: project.name,
+              duration: project.date,
+              highlights: project.testimonialHighlights,
+              keywords: project.keywords,
+            }}
           />
         ))}
       </div>
