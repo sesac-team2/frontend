@@ -8,6 +8,8 @@ interface ShareHeaderProps {
   brandHref: string;
   shareLabel?: string;
   exportLabel?: string;
+  onClickShare: () => void;
+  onClickExport: () => void;
 }
 
 export default function ShareHeader({
@@ -15,6 +17,8 @@ export default function ShareHeader({
   brandHref,
   shareLabel = '공유하기',
   exportLabel = '내보내기',
+  onClickShare,
+  onClickExport,
 }: ShareHeaderProps) {
   return (
     <header className="border-b border-border">
@@ -33,6 +37,7 @@ export default function ShareHeader({
             size="sm"
             className="gap-2 bg-transparent"
             type="button"
+            onClick={onClickShare}
           >
             <Share2 className="w-4 h-4" />
             {shareLabel}
@@ -43,6 +48,7 @@ export default function ShareHeader({
             size="sm"
             className="gap-2 bg-transparent"
             type="button"
+            onClick={onClickExport}
           >
             <Download className="w-4 h-4" />
             {exportLabel}
