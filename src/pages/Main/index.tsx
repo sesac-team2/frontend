@@ -52,7 +52,11 @@ export default function MainPage() {
               >
                 <Avatar className="w-7 h-7">
                   <AvatarFallback className="text-xs bg-primary text-primary-foreground">
-                    {lastName}
+                    {user?.avatarUrl ? (
+                      <img src={user.avatarUrl} alt="" />
+                    ) : (
+                      lastName
+                    )}
                   </AvatarFallback>
                 </Avatar>
                 <span className="hidden sm:inline text-sm font-medium text-foreground">
