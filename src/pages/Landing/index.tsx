@@ -30,7 +30,7 @@ export default function LandingPage() {
                 description="프로젝트 협업 과정에서 개인의 기여를 기록하고, 정리하고, 한눈에 확인하세요."
                 primaryCtaHref="/login"
                 primaryCtaLabel="무료로 시작하기"
-                secondaryCtaHref="/share/sarah-chen"
+                secondaryCtaHref="/share/example"
                 secondaryCtaLabel="예시 보기"
               />
             </div>

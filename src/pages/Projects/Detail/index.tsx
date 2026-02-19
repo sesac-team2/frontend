@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+
 import { Calendar, Users, FileText, Pencil, ArrowLeft } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 import LeaveProjectModal from '@/components/LeaveProjectModal';
@@ -9,9 +9,10 @@ import OverviewTab from './components/OverviewTab';
 import ParticipantsTab from './components/ParticipantsTab';
 import { formatDate } from '../utils';
 import ProovIcon from '@/assets/proov.svg';
+import UserMenu from '@/components/common/UserMenu';
 
 import type { ProjectStatus, ProjectDetail } from '@/types/project';
-import { useAuth } from '@/context/AuthContext';
+
 import { projectApi } from '@/api/project';
 
 const statusConfig: Record<
@@ -32,7 +33,6 @@ import ProjectDetailSkeleton from './components/ProjectDetailSkeleton';
 
 export default function ProjectDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const { user } = useAuth();
 
   const [activeTab, setActiveTab] = useState<'overview' | 'participants'>(
     'overview',
@@ -75,9 +75,6 @@ export default function ProjectDetailPage() {
 
   // detail 응답에 testimonialCount 없으면 임시 처리
   const testimonialCount = useMemo(() => 0, []);
-
-  const lastName = user?.fullName?.[0] ?? 'U';
-  const displayName = user?.fullName ?? '';
 
   if (isLoading && !projectDetail) {
     return <ProjectDetailSkeleton />;
@@ -133,19 +130,7 @@ export default function ProjectDetailPage() {
               </Link>
             </div>
 
-            <Link
-              to="/settings"
-              className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted transition-colors"
-            >
-              <Avatar className="w-7 h-7">
-                <AvatarFallback className="text-xs bg-primary text-primary-foreground">
-                  {lastName}
-                </AvatarFallback>
-              </Avatar>
-              <span className="hidden sm:inline text-sm font-medium text-foreground">
-                {displayName}
-              </span>
-            </Link>
+            <UserMenu />
           </div>
         </div>
       </header>
