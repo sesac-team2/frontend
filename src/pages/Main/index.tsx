@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+
 import { Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ProjectsTab from './components/ProjectsTab';
@@ -8,17 +8,14 @@ import ContributionSummaryTab from './components/ContributionSummaryTab';
 // import { mockTestimonials } from './data';
 import ProovIcon from '@/assets/proov.svg';
 import { useProjects } from '@/context/ProjectContext';
-import { useAuth } from '@/context/AuthContext';
 
 import MainSkeleton from './components/MainSkeleton';
+import UserMenu from '@/components/common/UserMenu';
 
 export default function MainPage() {
   const [activeTab, setActiveTab] = useState<'projects' | 'contributions'>(
     'projects',
   );
-  const { user } = useAuth();
-
-  const lastName = user?.fullName?.[0] ?? 'U';
 
   const { projects, isLoading } = useProjects();
 
@@ -46,23 +43,7 @@ export default function MainPage() {
             </Link>
 
             <div className="flex items-center gap-4">
-              <Link
-                to="/settings"
-                className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-muted transition-colors"
-              >
-                <Avatar className="w-7 h-7">
-                  <AvatarFallback className="text-xs bg-primary text-primary-foreground">
-                    {user?.avatarUrl ? (
-                      <img src={user.avatarUrl} alt="" />
-                    ) : (
-                      lastName
-                    )}
-                  </AvatarFallback>
-                </Avatar>
-                <span className="hidden sm:inline text-sm font-medium text-foreground">
-                  {user?.fullName}
-                </span>
-              </Link>
+              <UserMenu />
             </div>
           </div>
         </div>
