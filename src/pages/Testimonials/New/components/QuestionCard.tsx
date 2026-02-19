@@ -1,10 +1,11 @@
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { CheckCircle } from 'lucide-react';
-import type { Question } from '../data';
+import type { TestimonialQuestion } from '../index';
+// 또는 더 깔끔하게는 types로 분리 추천
 
 interface QuestionCardProps {
-  question: Question;
+  question: TestimonialQuestion;
   index: number;
   value: string;
   onChange: (value: string) => void;
@@ -54,7 +55,9 @@ export default function QuestionCard({
         />
         <div className="flex justify-end mt-2">
           <span
-            className={`text-xs ${charCount > 500 ? 'text-warning' : 'text-muted-foreground'}`}
+            className={`text-xs ${
+              charCount > 500 ? 'text-warning' : 'text-muted-foreground'
+            }`}
           >
             {charCount} characters
           </span>

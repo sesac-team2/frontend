@@ -6,17 +6,21 @@ import InviteModal from './InviteModal';
 import type { ProjectMember } from '@/types/project';
 
 interface ParticipantsTabProps {
+  projectId: string; // ✅ 추가
   participants: ProjectMember[];
+  onInvited?: () => void | Promise<void>;
 }
 
 export default function ParticipantsTab({
+  projectId,
   participants,
+  onInvited,
 }: ParticipantsTabProps) {
   return (
     <div className="space-y-3">
-      {/* Invite 버튼 */}
       <div className="flex justify-end">
         <InviteModal
+          onInvited={onInvited}
           trigger={
             <Button
               variant="outline"
@@ -55,7 +59,6 @@ export default function ParticipantsTab({
                 key={member.userId}
                 className="hover:bg-muted/30 transition-colors"
               >
-                {/* Name */}
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-3">
                     <Avatar className="w-8 h-8">
@@ -81,20 +84,20 @@ export default function ParticipantsTab({
                   </div>
                 </td>
 
-                {/* Role */}
                 <td className="px-4 py-3">
                   <span className="text-sm text-foreground">{member.role}</span>
                 </td>
 
-                {/* Testimonial (현재 members 응답에는 정보가 없어서 placeholder) */}
                 <td className="px-4 py-3">
                   <span className="text-sm text-muted-foreground">-</span>
                 </td>
 
-                {/* Actions */}
                 <td className="px-4 py-3 text-right">
                   <Button variant="ghost" size="sm" asChild>
-                    <Link to={`/testimonials/new?participant=${member.userId}`}>
+                    {/* ✅ projectId를 path로, recipientId만 query로 */}
+                    <Link
+                      to={`/testimonials/${projectId}/new?participant=${member.userId}`}
+                    >
                       <PenLine className="w-4 h-4 mr-1" />
                       작성하기
                     </Link>

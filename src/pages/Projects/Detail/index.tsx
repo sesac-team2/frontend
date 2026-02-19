@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -44,32 +44,36 @@ export default function ProjectDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  // ✅ 정석: 상세 다시 불러오는 함수 (Invite 성공 후 여기만 호출)
+  const refetchDetail = useCallback(async () => {
     if (!id) return;
 
-    const run = async () => {
-      setIsLoading(true);
-      setError(null);
+    setIsLoading(true);
+    setError(null);
 
-      try {
-        const detail = await projectApi.getProjectDetail(id);
-        console.log(detail);
-        setProjectDetail(detail);
-      } catch (e: any) {
-        setError(e?.message ?? '프로젝트 상세 정보를 불러오지 못했어요.');
-        setProjectDetail(null);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    run();
+    try {
+      const detail = await projectApi.getProjectDetail(id);
+      console.log('프로젝트 디테일: ', detail);
+      setProjectDetail(detail);
+    } catch (e: any) {
+      setError(e?.message ?? '프로젝트 상세 정보를 불러오지 못했어요.');
+      setProjectDetail(null);
+    } finally {
+      setIsLoading(false);
+    }
   }, [id]);
+
+  // ✅ 최초 진입 시 1회 로딩
+  useEffect(() => {
+    refetchDetail();
+  }, [refetchDetail]);
 
   const participants = projectDetail?.members ?? [];
   const participantCount = participants.length;
 
-  // testimonial_count가 detail 응답에 없다면 0(또는 목록에서 가져오려면 Context/prop 필요)
+  console.log('참여자: ', participants);
+
+  // detail 응답에 testimonialCount 없으면 임시 처리
   const testimonialCount = useMemo(() => 0, []);
 
   const lastName = user?.fullName?.[0] ?? 'U';
@@ -224,7 +228,12 @@ export default function ProjectDetailPage() {
         {activeTab === 'overview' ? (
           <OverviewTab project={projectDetail} participants={participants} />
         ) : (
-          <ParticipantsTab participants={participants} />
+          // ✅ Invite 성공하면 refetchDetail() 실행 → 참여자 목록 즉시 갱신
+          <ParticipantsTab
+            projectId={projectDetail.id}
+            participants={participants}
+            onInvited={refetchDetail}
+          />
         )}
       </main>
     </div>

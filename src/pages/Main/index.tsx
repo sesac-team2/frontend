@@ -5,7 +5,7 @@ import { Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ProjectsTab from './components/ProjectsTab';
 import ContributionSummaryTab from './components/ContributionSummaryTab';
-import { mockTestimonials } from './data';
+// import { mockTestimonials } from './data';
 import ProovIcon from '@/assets/proov.svg';
 import { useProjects } from '@/context/ProjectContext';
 import { useAuth } from '@/context/AuthContext';
@@ -115,7 +115,7 @@ export default function MainPage() {
             {activeTab === 'projects' ? (
               <ProjectsTab projects={safeProjects} />
             ) : (
-              <ContributionSummaryTab testimonials={mockTestimonials} />
+              <ContributionSummaryTab projects={safeProjects} />
             )}
           </>
         )}

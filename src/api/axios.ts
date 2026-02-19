@@ -4,7 +4,7 @@ const baseURL = '';
 // 1. 기본 설정이 적용된 인스턴스 생성
 const api = axios.create({
   baseURL,
-  timeout: 5000,
+  timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
   },
