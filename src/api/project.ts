@@ -78,4 +78,14 @@ export const projectApi = {
     );
     return response.data;
   },
+
+  inviteMember: async (
+    projectId: string,
+    body: { email: string; role: 'member' | 'admin' },
+  ) => {
+    console.log(body);
+    const res = await api.post(`/api/projects/${projectId}/members`, body);
+    console.log(res);
+    return res.data;
+  },
 };
