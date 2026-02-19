@@ -1,45 +1,54 @@
 import api from './axios';
-// import { Testimonial } from '@/types/testimonial';
 
-export type CreateTestimonialRequestBody = {
-  projectId: string;
-  recipientId: string;
+export type ApiUser = { id: string; full_name: string };
+
+export type ApiProjectTestimonial = {
+  id: string;
+  sender: ApiUser;
+  recipient: ApiUser;
   content: string;
   highlights: string[];
   skills: string[];
+  createdAt: string;
+  // ✅ 서버가 projectName/projectId를 안 주면 UI 필터는 따로 처리해야 함
 };
+
+export type ApiContributionSkill = { name: string; count: number };
+
+export type ApiMyContributions = {
+  total_received: number;
+  top_skills: ApiContributionSkill[];
+  recent_testimonials: ApiProjectTestimonial[]; // 명세상 ... 여기에 testimonial이 들어온다고 가정
+};
+
 export const testimonialApi = {
-  getQuestions: async (id: string) => {
-    try {
-      const response = await api.get(
-        `/api/projects/${id}/testimonials/questions`,
-      );
-      console.log('API OK:', response.data);
-      return response.data;
-    } catch (e: any) {
-      console.log('API FAIL:', e?.response?.status, e?.response?.data);
-      throw e;
-    }
-  },
-
-  getTestimonialList: async (id: string) => {
-    const response = await api.get(`/api/projects/${id}/testimonials`);
+  getQuestions: async (projectId: string) => {
+    const response = await api.get(
+      `/api/projects/${projectId}/testimonials/questions`,
+    );
     return response.data;
   },
 
+  // ✅ 프로젝트별 후기 목록
+  getTestimonialList: async (projectId: string) => {
+    const response = await api.get(`/api/projects/${projectId}/testimonials`);
+    return response.data as ApiProjectTestimonial[];
+  },
+
+  // ✅ 내 기여도 요약 (반드시 /api 붙이기)
   getMyTestimonialStatistics: async () => {
-    const response = await api.get(`/users/me/contributions`);
-    return response.data;
+    const response = await api.get(`/api/users/me/contributions`);
+    return response.data as ApiMyContributions;
   },
 
-  createTestimonial: async (body: CreateTestimonialRequestBody) => {
-    const response = await api.post(`/api/testimonials`, {
-      projectId: body.projectId,
-      recipientId: body.recipientId,
-      content: body.content,
-      highlights: body.highlights,
-      skills: body.skills,
-    });
+  createTestimonial: async (body: {
+    projectId: string;
+    recipientId: string;
+    content: string;
+    highlights: string[];
+    skills: string[];
+  }) => {
+    const response = await api.post(`/api/testimonials`, body);
     return response.data;
   },
 };

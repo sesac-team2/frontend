@@ -11,24 +11,6 @@ import SuccessModal from './components/SuccessModal';
 
 import { testimonialApi } from '@/api/testimonial';
 
-/**
- * ✅ 백엔드 응답 형태
- * {
- *   "questions": ["...", "..."]
- * }
- */
-// type QuestionsResponse = {
-//   questions: string[];
-// };
-
-/**
- * ✅ QuestionCard가 기대하는 Question 형태에 맞춤
- * QuestionCard에서 사용하는 필드:
- * - question.category
- * - question.required
- * - question.question
- * - question.placeholder
- */
 export type TestimonialQuestion = {
   id: string;
   category: string;
@@ -41,14 +23,18 @@ export type TestimonialQuestion = {
 const toQuestions = (qs: string[]): TestimonialQuestion[] =>
   qs.map((text, idx) => ({
     id: `q${idx + 1}`,
-    category: 'AI 질문', // ✅ 임시 기본값
-    required: true, // ✅ 전부 필수(원하면 규칙 바꿀 수 있음)
+    category: 'AI 질문',
+    required: true,
     question: text,
     placeholder: '답변을 입력해주세요.',
   }));
 
+type QuestionsResponse = {
+  questions: string[];
+};
+
 export default function NewTestimonialPage() {
-  // ✅ 현재 라우트: /testimonials/:projectId/new?participant=xxx
+  // ✅ 라우트: /testimonials/:projectId/new?participant=xxx
   const { projectId } = useParams<{ projectId: string }>();
   const [searchParams] = useSearchParams();
   const recipientId = searchParams.get('participant') ?? '';
@@ -60,6 +46,11 @@ export default function NewTestimonialPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // 제출 관련
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  // ✅ 질문 불러오기
   useEffect(() => {
     const run = async () => {
       if (!projectId) {
@@ -77,9 +68,9 @@ export default function NewTestimonialPage() {
         setLoading(true);
         setError(null);
 
-        const data = await testimonialApi.getQuestions(projectId);
-
-        console.log(data);
+        const data = (await testimonialApi.getQuestions(
+          projectId,
+        )) as QuestionsResponse;
 
         setQuestions(toQuestions(data.questions ?? []));
         setAnswers({});
@@ -102,9 +93,89 @@ export default function NewTestimonialPage() {
       .every((q) => answers[q.id]?.trim());
   }, [questions, answers]);
 
-  const handleSubmit = () => {
-    // TODO: createTestimonial 연동 시 여기서 POST
-    setShowSuccess(true);
+  const buildContent = () => {
+    const ordered = [...questions].sort((a, b) => a.id.localeCompare(b.id));
+    const parts = ordered.map((q, idx) => {
+      const a = (answers[q.id] ?? '').trim();
+      return `${idx + 1}. ${q.question}\n- ${a}`;
+    });
+    return parts.join('\n\n');
+  };
+
+  const buildHighlights = () => {
+    const ordered = [...questions].sort((a, b) => a.id.localeCompare(b.id));
+    const bullets: string[] = [];
+
+    for (const q of ordered) {
+      const a = (answers[q.id] ?? '').trim();
+      if (!a) continue;
+
+      const firstLine = a.split('\n')[0].trim();
+      const firstSentence = firstLine.split('. ')[0].trim();
+      bullets.push(firstSentence.length > 0 ? firstSentence : firstLine);
+    }
+
+    return bullets.slice(0, 5);
+  };
+
+  const handleSubmit = async () => {
+    if (!projectId) {
+      setSubmitError('projectId가 없습니다.');
+      return;
+    }
+    if (!recipientId) {
+      setSubmitError('recipientId가 없습니다.');
+      return;
+    }
+    if (!requiredAnswered) {
+      setSubmitError('필수 질문을 모두 작성해주세요.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      const content = buildContent();
+
+      // ✅ 서버 스펙: content min 50 chars
+      if (content.trim().length < 50) {
+        setSubmitError('후기 본문은 최소 50자 이상 작성해주세요.');
+        return;
+      }
+
+      // const body = {
+      //   projectId,
+      //   recipientId,
+      //   content,
+      //   highlights: buildHighlights(),
+      //   skills: [], // ✅ 스킬 입력 UI 전까지 빈 배열
+      // };
+
+      const body = {
+        projectId,
+        recipientId,
+        content:
+          '테스트 후기입니다....(50자 이상)31253481528451278458121111111111111111111111111',
+      };
+
+      const res = await testimonialApi.createTestimonial(body as any);
+      console.log(res);
+
+      // const res = await testimonialApi.createTestimonial(body);
+      // console.log('createTestimonial response:', res);
+
+      setShowSuccess(true);
+    } catch (e: any) {
+      const status = e?.response?.status;
+      const msg =
+        e?.response?.data?.message ??
+        e?.response?.data?.error ??
+        `제출에 실패했어요. (${status ?? 'unknown'})`;
+      setSubmitError(msg);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (loading) {
@@ -165,14 +236,22 @@ export default function NewTestimonialPage() {
         </div>
       </header>
 
-      {/* RecipientInfo (원하면 recipientId를 prop으로 내려줘서 내부에서 사용자 정보 fetch 가능) */}
+      {/* RecipientInfo (원하면 recipientId를 prop으로 내려줘서 내부 fetch 가능) */}
       <RecipientInfo />
+
+      {/* submit error */}
+      {submitError && (
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="mt-4 p-3 rounded-lg border border-destructive/30 bg-destructive/10 text-sm text-destructive">
+            {submitError}
+          </div>
+        </div>
+      )}
 
       {/* Main content */}
       <main className="max-w-4xl mx-auto px-6 py-8">
         <ProgressIndicator answers={answers} />
 
-        {/* Questions */}
         <div className="space-y-6">
           {questions.map((question, index) => (
             <QuestionCard
@@ -187,7 +266,6 @@ export default function NewTestimonialPage() {
           ))}
         </div>
 
-        {/* Notice */}
         <div className="mt-8 p-4 rounded-lg bg-muted/50 border border-border">
           <p className="text-sm text-muted-foreground">
             <strong className="text-foreground">Note:</strong> You can edit your
@@ -197,14 +275,16 @@ export default function NewTestimonialPage() {
         </div>
       </main>
 
+      {/* BottomActions는 네 구현에 따라 props가 다를 수 있음
+          - 만약 isSubmitting props가 없다면, BottomActions 컴포넌트에도 추가해줘 */}
       <BottomActions
         requiredAnswered={requiredAnswered}
         onSubmit={handleSubmit}
+        isSubmitting={isSubmitting as any}
       />
 
       <SuccessModal open={showSuccess} onOpenChange={setShowSuccess} />
 
-      {/* Spacer for fixed bottom */}
       <div className="h-24" />
     </div>
   );
