@@ -6,11 +6,13 @@ import InviteModal from './InviteModal';
 import type { ProjectMember } from '@/types/project';
 
 interface ParticipantsTabProps {
+  projectId: string; // ✅ 추가
   participants: ProjectMember[];
-  onInvited?: () => void | Promise<void>; // ✅ 초대 성공 후 호출
+  onInvited?: () => void | Promise<void>;
 }
 
 export default function ParticipantsTab({
+  projectId,
   participants,
   onInvited,
 }: ParticipantsTabProps) {
@@ -92,7 +94,10 @@ export default function ParticipantsTab({
 
                 <td className="px-4 py-3 text-right">
                   <Button variant="ghost" size="sm" asChild>
-                    <Link to={`/testimonials/new?participant=${member.userId}`}>
+                    {/* ✅ projectId를 path로, recipientId만 query로 */}
+                    <Link
+                      to={`/testimonials/${projectId}/new?participant=${member.userId}`}
+                    >
                       <PenLine className="w-4 h-4 mr-1" />
                       작성하기
                     </Link>

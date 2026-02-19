@@ -37,7 +37,11 @@ function App() {
         <Route path="/projects/:id" element={<ProjectDetailPage />} />
         <Route path="/projects/:id/edit" element={<EditProjectPage />} />
         <Route path="/share/:id" element={<PublicSharePage />} />
-        <Route path="/testimonials/new" element={<NewTestimonialPage />} />
+        {/* <Route path="/testimonials/new" element={<NewTestimonialPage />} /> */}
+        <Route
+          path="/testimonials/:projectId/new"
+          element={<NewTestimonialPage />}
+        />
 
         {/* Placeholder Routes */}
         <Route

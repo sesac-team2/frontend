@@ -15,7 +15,6 @@ import { UserPlus, Copy, Check, Loader2 } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useParams } from 'react-router-dom';
 import { projectApi } from '@/api/project';
-import { ContextMenuShortcut } from '@/components/ui/context-menu';
 
 type InviteModalProps = {
   trigger?: ReactNode;

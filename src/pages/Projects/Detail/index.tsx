@@ -53,6 +53,7 @@ export default function ProjectDetailPage() {
 
     try {
       const detail = await projectApi.getProjectDetail(id);
+      console.log('프로젝트 디테일: ', detail);
       setProjectDetail(detail);
     } catch (e: any) {
       setError(e?.message ?? '프로젝트 상세 정보를 불러오지 못했어요.');
@@ -69,6 +70,8 @@ export default function ProjectDetailPage() {
 
   const participants = projectDetail?.members ?? [];
   const participantCount = participants.length;
+
+  console.log('참여자: ', participants);
 
   // detail 응답에 testimonialCount 없으면 임시 처리
   const testimonialCount = useMemo(() => 0, []);
@@ -227,6 +230,7 @@ export default function ProjectDetailPage() {
         ) : (
           // ✅ Invite 성공하면 refetchDetail() 실행 → 참여자 목록 즉시 갱신
           <ParticipantsTab
+            projectId={projectDetail.id}
             participants={participants}
             onInvited={refetchDetail}
           />
