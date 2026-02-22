@@ -22,17 +22,17 @@ export default function BottomActions({
         <div className="text-sm">
           {!requiredAnswered && !isSubmitting && (
             <span className="text-muted-foreground">
-              Please answer all required questions
+              필수 질문을 모두 작성해주세요
             </span>
           )}
           {isSubmitting && (
-            <span className="text-muted-foreground">Submitting...</span>
+            <span className="text-muted-foreground">기여를 제출하는 중...</span>
           )}
         </div>
 
         <div className="flex items-center gap-3">
           <Button variant="outline" asChild disabled={isSubmitting}>
-            <Link to={backTo}>Save Draft</Link>
+            <Link to={backTo}>임시 저장</Link>
           </Button>
 
           <Button
@@ -40,7 +40,7 @@ export default function BottomActions({
             onClick={onSubmit}
             className="min-w-40"
           >
-            {isSubmitting ? 'Submitting...' : 'Submit Testimonial'}
+            {isSubmitting ? '제출 중...' : '기여 제출'}
           </Button>
         </div>
       </div>

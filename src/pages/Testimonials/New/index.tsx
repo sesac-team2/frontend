@@ -10,6 +10,8 @@ import BottomActions from './components/BottomActions';
 import SuccessModal from './components/SuccessModal';
 
 import { testimonialApi } from '@/api/testimonial';
+import { projectApi } from '@/api/project';
+import type { ProjectMember } from '@/types/project';
 
 export type TestimonialQuestion = {
   id: string;
@@ -42,6 +44,7 @@ export default function NewTestimonialPage() {
   const [questions, setQuestions] = useState<TestimonialQuestion[]>([]);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [showSuccess, setShowSuccess] = useState(false);
+  const [recipient, setRecipient] = useState<ProjectMember | null>(null);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -68,11 +71,22 @@ export default function NewTestimonialPage() {
         setLoading(true);
         setError(null);
 
-        const data = (await testimonialApi.getQuestions(
-          projectId,
-        )) as QuestionsResponse;
+        const [questionData, detail] = await Promise.all([
+          testimonialApi.getQuestions(projectId) as Promise<QuestionsResponse>,
+          projectApi.getProjectDetail(projectId),
+        ]);
 
-        setQuestions(toQuestions(data.questions ?? []));
+        const selectedRecipient =
+          detail.members?.find((member) => member.userId === recipientId) ??
+          null;
+
+        if (!selectedRecipient) {
+          setError('수신자 참여자 정보를 찾을 수 없어요.');
+          return;
+        }
+
+        setRecipient(selectedRecipient);
+        setQuestions(toQuestions(questionData.questions ?? []));
         setAnswers({});
       } catch (e: any) {
         console.log('getQuestions failed:', e);
@@ -140,17 +154,9 @@ export default function NewTestimonialPage() {
 
       // ✅ 서버 스펙: content min 50 chars
       if (content.trim().length < 50) {
-        setSubmitError('후기 본문은 최소 50자 이상 작성해주세요.');
+        setSubmitError('기여 본문은 최소 50자 이상 작성해주세요.');
         return;
       }
-
-      // const body = {
-      //   projectId,
-      //   recipientId,
-      //   content,
-      //   highlights: buildHighlights(),
-      //   skills: [], // ✅ 스킬 입력 UI 전까지 빈 배열
-      // };
 
       const body = {
         projectId,
@@ -161,9 +167,6 @@ export default function NewTestimonialPage() {
 
       const res = await testimonialApi.createTestimonial(body as any);
       console.log(res);
-
-      // const res = await testimonialApi.createTestimonial(body);
-      // console.log('createTestimonial response:', res);
 
       setShowSuccess(true);
     } catch (e: any) {
@@ -219,25 +222,23 @@ export default function NewTestimonialPage() {
                 <ArrowLeft className="w-5 h-5" />
               </Link>
               <div>
-                <h1 className="font-semibold text-foreground">
-                  Write Testimonial
-                </h1>
+                <h1 className="font-semibold text-foreground">기여 작성</h1>
                 <p className="text-sm text-muted-foreground">
-                  Project #{projectId}
+                  프로젝트 #{projectId}
                 </p>
               </div>
             </div>
 
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Clock className="w-4 h-4" />
-              <span>Editable for 24 hours after submission</span>
+              <span>제출 후 24시간 동안 수정할 수 있어요</span>
             </div>
           </div>
         </div>
       </header>
 
       {/* RecipientInfo (원하면 recipientId를 prop으로 내려줘서 내부 fetch 가능) */}
-      <RecipientInfo />
+      <RecipientInfo participant={recipient} />
 
       {/* submit error */}
       {submitError && (
@@ -250,7 +251,7 @@ export default function NewTestimonialPage() {
 
       {/* Main content */}
       <main className="max-w-4xl mx-auto px-6 py-8">
-        <ProgressIndicator answers={answers} />
+        <ProgressIndicator answers={answers} questions={questions} />
 
         <div className="space-y-6">
           {questions.map((question, index) => (
@@ -268,22 +269,25 @@ export default function NewTestimonialPage() {
 
         <div className="mt-8 p-4 rounded-lg bg-muted/50 border border-border">
           <p className="text-sm text-muted-foreground">
-            <strong className="text-foreground">Note:</strong> You can edit your
-            testimonial within 24 hours of submission. After that, changes will
-            require project admin approval.
+            <strong className="text-foreground">안내:</strong> 제출 후 24시간
+            이내에는 기여 내용을 수정할 수 있어요. 그 이후에는 수정 시 프로젝트
+            관리자 승인이 필요합니다.
           </p>
         </div>
       </main>
 
-      {/* BottomActions는 네 구현에 따라 props가 다를 수 있음
-          - 만약 isSubmitting props가 없다면, BottomActions 컴포넌트에도 추가해줘 */}
       <BottomActions
         requiredAnswered={requiredAnswered}
         onSubmit={handleSubmit}
         isSubmitting={isSubmitting as any}
       />
 
-      <SuccessModal open={showSuccess} onOpenChange={setShowSuccess} />
+      <SuccessModal
+        open={showSuccess}
+        onOpenChange={setShowSuccess}
+        recipientName={recipient?.fullName}
+        projectId={projectId}
+      />
 
       <div className="h-24" />
     </div>

@@ -2,7 +2,6 @@ import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { CheckCircle } from 'lucide-react';
 import type { TestimonialQuestion } from '../index';
-// 또는 더 깔끔하게는 types로 분리 추천
 
 interface QuestionCardProps {
   question: TestimonialQuestion;
@@ -31,18 +30,22 @@ export default function QuestionCard({
           <span className="w-7 h-7 rounded-full bg-muted flex items-center justify-center text-sm font-medium text-muted-foreground shrink-0">
             {index + 1}
           </span>
+
           <div>
             <div className="flex items-center gap-2 mb-1">
               <Badge variant="outline" className="text-xs font-normal">
                 {question.category}
               </Badge>
+
               {question.required && (
-                <span className="text-xs text-destructive">Required</span>
+                <span className="text-xs text-destructive">필수</span>
               )}
             </div>
+
             <h3 className="font-medium text-foreground">{question.question}</h3>
           </div>
         </div>
+
         {isAnswered && <CheckCircle className="w-5 h-5 text-accent shrink-0" />}
       </div>
 
@@ -53,13 +56,14 @@ export default function QuestionCard({
           placeholder={question.placeholder}
           className="min-h-30 resize-none text-base"
         />
+
         <div className="flex justify-end mt-2">
           <span
             className={`text-xs ${
               charCount > 500 ? 'text-warning' : 'text-muted-foreground'
             }`}
           >
-            {charCount} characters
+            {charCount} 글자 수
           </span>
         </div>
       </div>
