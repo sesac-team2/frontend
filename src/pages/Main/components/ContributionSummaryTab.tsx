@@ -2,12 +2,12 @@
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ImageIcon, Download } from 'lucide-react';
 
 import type { UITestimonial } from '@/types/testimonial';
 import TestimonialCard from './TestimonialCard';
 import { testimonialApi } from '@/api/testimonial';
 import type { Project } from '@/types';
+import ContributionSummarySkeleton from './ContributionSummarySkeleton';
 
 /** ✅ API 명세 (GET /projects/:id/testimonials) */
 type ApiUser = { id: string; full_name: string };
@@ -163,7 +163,7 @@ export default function ContributionSummaryTab({
   const projectCount = projects?.length ?? 0;
 
   if (loading) {
-    return <div className="text-sm text-muted-foreground">로딩 중...</div>;
+    return <ContributionSummarySkeleton />;
   }
 
   if (error) {
@@ -190,18 +190,6 @@ export default function ContributionSummaryTab({
 
   return (
     <>
-      {/* Action buttons */}
-      <div className="flex items-center justify-end gap-3 mb-6">
-        <Button variant="outline" className="gap-2 bg-transparent">
-          <ImageIcon className="w-4 h-4" />
-          이미지 생성
-        </Button>
-        <Button variant="outline" className="gap-2 bg-transparent">
-          <Download className="w-4 h-4" />
-          내보내기
-        </Button>
-      </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
         {/* Filter */}
         <div className="lg:col-span-2">

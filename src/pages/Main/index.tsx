@@ -51,9 +51,7 @@ export default function MainPage() {
 
       {/* Main content */}
       <main className="max-w-7xl mx-auto px-6 py-8">
-        {isLoading ? (
-          <div className="text-sm text-muted-foreground">로딩 중...</div>
-        ) : showEmptyProjectsOnly ? (
+        {showEmptyProjectsOnly ? (
           <ProjectsTab projects={safeProjects} />
         ) : (
           <>

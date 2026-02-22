@@ -2,6 +2,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import type { ProjectDetail } from '@/types/project';
 import type { ApiProjectTestimonial } from '@/api/testimonial';
 import { formatDate } from '../../utils';
+import OverviewSkeleton from './OverviewSkeleton';
 
 interface OverviewTabProps {
   project: ProjectDetail;
@@ -16,6 +17,10 @@ export default function OverviewTab({
   isLoading,
   error,
 }: OverviewTabProps) {
+  if (isLoading) {
+    return <OverviewSkeleton />;
+  }
+
   return (
     <div className="mx-auto w-full max-w-5xl space-y-6">
       <div className="p-6 rounded-xl border border-border bg-card">
@@ -27,12 +32,6 @@ export default function OverviewTab({
 
       <div className="p-6 rounded-xl border border-border bg-card">
         <h3 className="font-semibold text-foreground mb-4">최근 활동</h3>
-
-        {isLoading && (
-          <p className="text-sm text-muted-foreground">
-            기여를 불러오는 중입니다...
-          </p>
-        )}
 
         {!isLoading && error && <p className="text-sm text-red-500">{error}</p>}
 
