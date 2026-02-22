@@ -14,6 +14,8 @@ import UserMenu from '@/components/common/UserMenu';
 import type { ProjectStatus, ProjectDetail } from '@/types/project';
 
 import { projectApi } from '@/api/project';
+import { testimonialApi } from '@/api/testimonial';
+import type { ApiProjectTestimonial } from '@/api/testimonial';
 
 const statusConfig: Record<
   ProjectStatus,
@@ -43,6 +45,11 @@ export default function ProjectDetailPage() {
   );
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [testimonials, setTestimonials] = useState<ApiProjectTestimonial[]>([]);
+  const [isTestimonialsLoading, setIsTestimonialsLoading] = useState(false);
+  const [testimonialsError, setTestimonialsError] = useState<string | null>(
+    null,
+  );
 
   // ✅ 정석: 상세 다시 불러오는 함수 (Invite 성공 후 여기만 호출)
   const refetchDetail = useCallback(async () => {
@@ -68,13 +75,37 @@ export default function ProjectDetailPage() {
     refetchDetail();
   }, [refetchDetail]);
 
+  const refetchTestimonials = useCallback(async () => {
+    if (!id) return;
+
+    setIsTestimonialsLoading(true);
+    setTestimonialsError(null);
+
+    try {
+      const list = await testimonialApi.getTestimonialList(id);
+      setTestimonials(Array.isArray(list) ? list : []);
+    } catch (e: any) {
+      setTestimonialsError(
+        e?.response?.data?.message ?? 'Failed to load testimonials.',
+      );
+      setTestimonials([]);
+    } finally {
+      setIsTestimonialsLoading(false);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    if (activeTab !== 'overview') return;
+    refetchTestimonials();
+  }, [activeTab, refetchTestimonials]);
+
   const participants = projectDetail?.members ?? [];
   const participantCount = participants.length;
 
   console.log('참여자: ', participants);
 
   // detail 응답에 testimonialCount 없으면 임시 처리
-  const testimonialCount = useMemo(() => 0, []);
+  const testimonialCount = useMemo(() => testimonials.length, [testimonials]);
 
   if (isLoading && !projectDetail) {
     return <ProjectDetailSkeleton />;
@@ -211,7 +242,12 @@ export default function ProjectDetailPage() {
 
       <main className="max-w-5xl mx-auto px-6 py-8">
         {activeTab === 'overview' ? (
-          <OverviewTab project={projectDetail} participants={participants} />
+          <OverviewTab
+            project={projectDetail}
+            testimonials={testimonials}
+            isLoading={isTestimonialsLoading}
+            error={testimonialsError}
+          />
         ) : (
           // ✅ Invite 성공하면 refetchDetail() 실행 → 참여자 목록 즉시 갱신
           <ParticipantsTab

@@ -35,7 +35,6 @@ export const testimonialApi = {
     return response.data as ApiProjectTestimonial[];
   },
 
-  // ✅ 내 기여도 요약 (반드시 /api 붙이기)
   getMyTestimonialStatistics: async () => {
     const response = await api.get(`/api/users/me/contributions`);
     return response.data as ApiMyContributions;
@@ -45,8 +44,8 @@ export const testimonialApi = {
     projectId: string;
     recipientId: string;
     content: string;
-    highlights: string[];
-    skills: string[];
+    highlights?: string[];
+    skills?: string[];
   }) => {
     const response = await api.post(`/api/testimonials`, body);
     return response.data;
