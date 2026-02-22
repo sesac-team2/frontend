@@ -69,7 +69,57 @@ export const projectApi = {
 
   getProjects: async () => {
     const response = await api.get<ProjectResponse>('/api/projects');
-    return response.data;
+    const raw = response as any;
+    const payload = raw?.data ?? raw;
+
+    // Accept all known runtime shapes:
+    // 1) AxiosResponse<{ data: Project[]; meta }>
+    // 2) { data: Project[]; meta }
+    // 3) Project[]
+    let normalized: ProjectResponse;
+    if (Array.isArray(payload)) {
+      normalized = {
+        data: payload,
+        meta: {
+          total: payload.length,
+          page: 1,
+          limit: payload.length,
+        },
+      };
+    } else if (Array.isArray(payload?.data)) {
+      normalized = payload as ProjectResponse;
+    } else if (Array.isArray(raw?.data?.data)) {
+      normalized = raw.data as ProjectResponse;
+    } else {
+      const token = localStorage.getItem('accessToken');
+      const fallbackRes = await fetch('/api/projects', {
+        method: 'GET',
+        credentials: 'include',
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+
+      if (!fallbackRes.ok) {
+        throw new Error(`Fallback getProjects failed: ${fallbackRes.status}`);
+      }
+
+      const fallbackData = await fallbackRes.json();
+
+      if (Array.isArray(fallbackData)) {
+        normalized = {
+          data: fallbackData,
+          meta: {
+            total: fallbackData.length,
+            page: 1,
+            limit: fallbackData.length,
+          },
+        };
+      } else if (Array.isArray(fallbackData?.data)) {
+        normalized = fallbackData as ProjectResponse;
+      } else {
+        throw new Error('Invalid projects response shape');
+      }
+    }
+    return normalized;
   },
 
   getProjectDetail: async (id: string) => {
