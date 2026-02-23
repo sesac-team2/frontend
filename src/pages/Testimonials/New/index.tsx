@@ -159,15 +159,18 @@ export default function NewTestimonialPage() {
         return;
       }
 
+      const highlights = buildHighlights();
+
       const body = {
         projectId,
         recipientId,
-        content:
-          '테스트 후기입니다....(50자 이상)31253481528451278458121111111111111111111111111',
+        content, // ✅ 실제 답변 기반 content
+        highlights, // ✅ 답변 기반 요약 bullet
+        skills: [], // ✅ 스킬 UI 생기기 전까지 빈 배열(서버가 optional이면 빼도 됨)
       };
 
       const res = await testimonialApi.createTestimonial(body as any);
-      console.log(res);
+      console.log('createTestimonial response:', res);
 
       setShowSuccess(true);
     } catch (e: any) {

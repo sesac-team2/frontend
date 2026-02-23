@@ -1,6 +1,6 @@
 import api from './axios';
 
-export type ApiUser = { id: string; full_name: string };
+export type ApiUser = { id: string; fullName: string };
 
 export type ApiProjectTestimonial = {
   id: string;
@@ -32,11 +32,13 @@ export const testimonialApi = {
   // ✅ 프로젝트별 후기 목록
   getTestimonialList: async (projectId: string) => {
     const response = await api.get(`/api/projects/${projectId}/testimonials`);
+    console.log('프로젝트 리스트: ', response.data);
     return response.data as ApiProjectTestimonial[];
   },
 
   getMyTestimonialStatistics: async () => {
     const response = await api.get(`/api/users/me/contributions`);
+    console.log('내 기여 가져오기: ', response.data);
     return response.data as ApiMyContributions;
   },
 
@@ -48,6 +50,7 @@ export const testimonialApi = {
     skills?: string[];
   }) => {
     const response = await api.post(`/api/testimonials`, body);
+    console.log('기여 생성: ', response.data);
     return response.data;
   },
 };

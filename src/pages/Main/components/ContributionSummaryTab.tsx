@@ -10,7 +10,7 @@ import type { Project } from '@/types';
 import ContributionSummarySkeleton from './ContributionSummarySkeleton';
 
 /** ✅ API 명세 (GET /projects/:id/testimonials) */
-type ApiUser = { id: string; full_name: string };
+type ApiUser = { id: string; fullName: string };
 
 type ApiProjectTestimonial = {
   id: string;
@@ -40,8 +40,8 @@ const toUITestimonial = (
   opts?: { projectId?: string; projectName?: string; recipientRole?: string },
 ): UITestimonial => ({
   id: t.id,
-  senderName: t.sender?.full_name ?? '',
-  recipientName: t.recipient?.full_name ?? '',
+  senderName: t.sender?.fullName ?? '',
+  recipientName: t.recipient?.fullName ?? '',
   recipientRole: opts?.recipientRole ?? '—',
   projectId: opts?.projectId,
   projectName: opts?.projectName,
@@ -81,6 +81,7 @@ export default function ContributionSummaryTab({
       const data =
         (await testimonialApi.getMyTestimonialStatistics()) as ApiMyContributions;
 
+      console.log('내 기여 요약: ', data);
       setStats(data);
 
       const ui = (data.recent_testimonials ?? []).map((t) =>

@@ -37,36 +37,43 @@ export default function OverviewTab({
 
         {!isLoading && !error && testimonials.length > 0 && (
           <div className="space-y-4">
-            {testimonials.map((testimonial) => (
-              <div key={testimonial.id} className="flex items-start gap-3">
-                <Avatar className="w-8 h-8">
-                  <AvatarFallback className="text-xs bg-secondary text-secondary-foreground">
-                    {testimonial.sender.full_name
-                      .split(' ')
-                      .map((n) => n[0])
-                      .join('')}
-                  </AvatarFallback>
-                </Avatar>
+            {testimonials.map((testimonial) => {
+              const senderName = testimonial.sender?.fullName ?? 'Unknown';
+              const recipientName =
+                testimonial.recipient?.fullName ?? 'Unknown';
+              const senderInitials = senderName
+                .split(' ')
+                .map((n) => n?.[0] ?? '')
+                .join('');
 
-                <div>
-                  <p className="text-sm">
-                    <span className="font-medium text-foreground">
-                      {testimonial.sender.full_name}
-                    </span>
-                    <span className="text-muted-foreground">님이 </span>
-                    <span className="font-medium text-foreground">
-                      {testimonial.recipient.full_name}
-                    </span>
-                    <span className="text-muted-foreground">
-                      님에게 기여를 작성했습니다
-                    </span>
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    {formatDate(testimonial.createdAt)}
-                  </p>
+              return (
+                <div key={testimonial.id} className="flex items-start gap-3">
+                  <Avatar className="w-8 h-8">
+                    <AvatarFallback className="text-xs bg-secondary text-secondary-foreground">
+                      {senderInitials || 'U'}
+                    </AvatarFallback>
+                  </Avatar>
+
+                  <div>
+                    <p className="text-sm">
+                      <span className="font-medium text-foreground">
+                        {senderName}
+                      </span>
+                      <span className="text-muted-foreground">님이 </span>
+                      <span className="font-medium text-foreground">
+                        {recipientName}
+                      </span>
+                      <span className="text-muted-foreground">
+                        님에게 기여를 작성했습니다
+                      </span>
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      {formatDate(testimonial.createdAt)}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 
