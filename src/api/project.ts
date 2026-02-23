@@ -35,6 +35,7 @@ export type EditProjectRequestBody = {
   name: string;
   description?: string;
   status: string;
+  startDate: string;
   endDate: string;
 };
 
@@ -57,6 +58,7 @@ export const projectApi = {
       name: body.name,
       status: body.status,
       description: body.description,
+      startDate: body.startDate,
       endDate: body.endDate,
     });
     return response.data;
