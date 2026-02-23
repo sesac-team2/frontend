@@ -12,7 +12,7 @@ interface OverviewTabProps {
   error: string | null;
 }
 
-const VISIBLE_COUNT = 5;
+const VISIBLE_COUNT = 4;
 
 function getInitials(name: string) {
   const parts = name.trim().split(/\s+/).filter(Boolean);

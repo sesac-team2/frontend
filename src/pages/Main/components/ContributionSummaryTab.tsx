@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import type { UITestimonial } from '@/types/testimonial';
 import TestimonialCard from './TestimonialCard';
 import { testimonialApi } from '@/api/testimonial';
+import { projectApi } from '@/api/project';
 import type { Project } from '@/types';
 import ContributionSummarySkeleton from './ContributionSummarySkeleton';
 
@@ -106,14 +107,28 @@ export default function ContributionSummaryTab({
         setLoading(true);
         setError(null);
 
-        const list = (await testimonialApi.getTestimonialList(
-          projectId,
-        )) as ApiProjectTestimonial[];
+        const [list, detail] = await Promise.all([
+          testimonialApi.getTestimonialList(projectId) as Promise<
+            ApiProjectTestimonial[]
+          >,
+          projectApi.getProjectDetail(projectId),
+        ]);
 
         const projectName = projectNameById[projectId];
+        const roleByUserId = (detail.members ?? []).reduce(
+          (acc, member) => {
+            acc[member.userId] = member.role;
+            return acc;
+          },
+          {} as Record<string, string>,
+        );
 
         const ui = (list ?? []).map((t) =>
-          toUITestimonial(t, { projectId, projectName }),
+          toUITestimonial(t, {
+            projectId,
+            projectName,
+            recipientRole: roleByUserId[t.recipient?.id] ?? '멤버',
+          }),
         );
 
         setTestimonials(ui);
