@@ -16,6 +16,7 @@ import { useProjects } from '@/context/ProjectContext';
 import { projectApi } from '@/api/project';
 
 import type { ProjectStatus } from '@/types/project';
+import EditProjectSkeleton from './components/EditProjectSkeleton';
 
 export default function EditProjectPage() {
   const { id } = useParams<{ id: string }>();
@@ -97,7 +98,7 @@ export default function EditProjectPage() {
     }
   };
 
-  if (isLoading) return <div>로딩 중...</div>;
+  if (isLoading) return <EditProjectSkeleton />;
   if (error) return <div>에러가 발생했습니다.</div>;
 
   if (!project) {

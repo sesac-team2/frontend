@@ -8,6 +8,7 @@ import ProgressIndicator from './components/ProgressIndicator';
 import QuestionCard from './components/QuestionCard';
 import BottomActions from './components/BottomActions';
 import SuccessModal from './components/SuccessModal';
+import NewTestimonialSkeleton from './components/NewTestimonialSkeleton';
 
 import { testimonialApi } from '@/api/testimonial';
 import { projectApi } from '@/api/project';
@@ -182,11 +183,7 @@ export default function NewTestimonialPage() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-sm text-muted-foreground">질문 생성 중...</div>
-      </div>
-    );
+    return <NewTestimonialSkeleton />;
   }
 
   if (error) {
