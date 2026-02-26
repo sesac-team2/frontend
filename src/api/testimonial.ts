@@ -10,6 +10,7 @@ export type ApiProjectTestimonial = {
   highlights: string[];
   skills: string[];
   createdAt: string;
+  summary: string;
   // ✅ 서버가 projectName/projectId를 안 주면 UI 필터는 따로 처리해야 함
 };
 

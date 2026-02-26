@@ -2,7 +2,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Calendar } from 'lucide-react';
 import type { UITestimonial } from '@/types/testimonial';
-import { formatDateFull } from '../data'; // 기존 함수 그대로 써도 OK (ISO면 잘 파싱되는지만 확인)
+import { formatDateFull } from '../data';
 
 interface TestimonialCardProps {
   testimonial: UITestimonial;
@@ -10,7 +10,7 @@ interface TestimonialCardProps {
 
 export default function TestimonialCard({ testimonial }: TestimonialCardProps) {
   const initials =
-    testimonial.recipientName
+    testimonial.senderName
       ?.split(' ')
       .map((n) => n[0])
       .join('')
@@ -28,13 +28,15 @@ export default function TestimonialCard({ testimonial }: TestimonialCardProps) {
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-4 mb-2">
             <div>
-              <h4 className="font-semibold text-foreground">
-                {testimonial.recipientName}
+              <h4 className="font-semibold text-foreground flex items-center gap-2">
+                <span>{testimonial.senderName}</span>
+                <span className="text-muted-foreground">→</span>
+                <span>{testimonial.recipientName}</span>
               </h4>
 
               <p className="text-sm text-muted-foreground">
                 {testimonial.recipientRole ?? '—'}{' '}
-                {testimonial.projectName ? `· ${testimonial.projectName}` : ''}
+                {testimonial.projectName ? ` · ${testimonial.projectName}` : ''}
               </p>
             </div>
 
@@ -48,10 +50,10 @@ export default function TestimonialCard({ testimonial }: TestimonialCardProps) {
             {(testimonial.highlights ?? []).map((highlight, index) => (
               <li
                 key={index}
-                className="text-sm text-foreground flex items-start gap-2"
+                className="flex gap-2 text-sm text-foreground leading-6"
               >
-                <span className="text-accent mt-1">•</span>
-                {highlight}
+                <span className="text-accent">•</span>
+                <span className="flex-1">{highlight}</span>
               </li>
             ))}
           </ul>
